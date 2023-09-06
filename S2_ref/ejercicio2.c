@@ -5,7 +5,7 @@ int interativo(int number){
     
     int acum = 0;
 
-    for(int i = 0; i < number + 1; i++){
+    for(int i = 1; i <= number; i++){
         acum += i;
     }
 
