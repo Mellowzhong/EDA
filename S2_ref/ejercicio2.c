@@ -12,13 +12,14 @@ int interativo(int number){
     return acum;
 }
 
-int recursivo(int number, int acum){
+int recursivo(int number){
 
-    if(number == 0){
-        return acum;
+    if(number == 1){
+        return 1;
 
     }else{
-        recursivo(number - 1, acum + number);   
+        int resultado = number +  recursivo(number - 1);  
+        return resultado;
     }
 }
 
@@ -34,7 +35,7 @@ int main(){
 
     double recursive_time = 0.0;
     clock_t begin_2 = clock(); 
-    int resultado_recursivo = recursivo(5, 0);
+    int resultado_recursivo = recursivo(5);
     clock_t end_2 = clock();
     recursive_time += (double)(end_2 - begin_2) / CLOCKS_PER_SEC;
 

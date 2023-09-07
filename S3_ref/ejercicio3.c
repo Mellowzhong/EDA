@@ -1,34 +1,26 @@
+//codigo de los conejos, ejercicio 3.
 #include <stdio.h>
 
-int iterativo(int base, int expo){
-    int acum = 1;
+int recursion1(int pareja_maduros, int pareja_inmaduros, int meses){
+    if (meses == 0||meses == 1){
 
-    for(int i = 0; i < expo; i++){
-        acum *= base;
+        return pareja_maduros + pareja_inmaduros;
     }
+    else {
 
-    return acum;
-}
-
-int recursivo(int base, int expo){
-    if(expo == 1){
-        return base;
-    }else if (expo == 0){
-        return 1;
-    }else{
-        int resultado = base * recursivo(base, expo - 1);
-
-        return resultado;
+        return recursion1(pareja_inmaduros + pareja_maduros, pareja_maduros, meses -1);
     }
 }
 
 int main(){
+    
+    int meses;  
 
-    int resultado_iterativo = iterativo(2,3);
-    int resultado_recursivo = recursivo(2,3);
+    printf("Escribe los meses que quiere\n");
+    scanf("%d", &meses);
+    
+    int conejos = recursion1( 1, 0, meses);
 
-    printf("resultado iterativo: %d\n", resultado_iterativo);
-    printf("resultado recursivo: %d\n", resultado_recursivo);
-
+    printf("Catidad de parejas totales son: %d\n", conejos);
     return 0;
 }
