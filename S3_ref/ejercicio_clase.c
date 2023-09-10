@@ -9,18 +9,28 @@ int iterativo(int base, int expo){
 
     return acum;
 }
+//tiempo y complejidad:
+//tiempo: 6c
+//complejidad: o(n);
 
 int recursivo(int base, int expo){
-    if(expo == 1){
+    if(expo == 1 && expo > 0){
+        
         return base;
-    }else if (expo == 0){
-        return 1;
+
     }else{
         int resultado = base * recursivo(base, expo - 1);
 
         return resultado;
     }
 }
+
+//tiempo y complejidad:
+//tiempo: 3c, si expo =1
+        //6c + t(expo-1) , si expo > 1
+        // a = 1, b = 1, k = 0
+        // => t(expo-1) + O(n).
+
 
 int main(){
 

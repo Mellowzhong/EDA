@@ -14,15 +14,15 @@ void intercambiar(int *a, int *b){
     *a = *b;
     *b = aux;
 }
+//tiempo: 3c
 
 void order(int* array, int array_lenght){
     int last_pos = array_lenght - 1;
 
     for(int i = 0; i < last_pos; i++){
         if(array[i] < 0){
-            intercambiar(&array[i], &array[last_pos]);
+            intercambiar(&array[i], &array[last_pos]); // no se si contarlo como 3c o como c
             last_pos = last_pos - 1;
-            imprimir(array, array_lenght);
         }
     }
 
@@ -30,19 +30,20 @@ void order(int* array, int array_lenght){
         if(array[i] < 0){
             intercambiar(&array[i], &array[last_pos]);
             last_pos = last_pos - 1;
-            imprimir(array, array_lenght);
         }
     }
-    printf("last_post before: %d\n", last_pos);
+    
     for(int i = 0; i < array_lenght; i++){
         if((i % 2 == 0) && (array[i] >= 0)){
             intercambiar(&array[i], &array[last_pos]);
-            imprimir(array, array_lenght);
-            printf("i = %d, lenght: %d, last_pos: %d\n", i, array_lenght, last_pos);
             last_pos = last_pos + 1;
         }
     }
 }
+//tiempo y complejidad: 
+// tiempo : 2c + n(9c) + n(9c) + n(11c)
+        //2c + 27cn
+//complejidad : O(n),
 
 int main() {
 

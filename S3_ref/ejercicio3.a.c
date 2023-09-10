@@ -28,6 +28,10 @@ int function(int* array){
         }
     }
 }
+//tiempo y complejidad:
+//tiempo: c + n(6c + n(5c) + n(5c) + 2c).
+//tiempo: c + n(8c + 10cn) => c + 8cn + 10cn**2
+//complejidad: O(n**2).
 
 int main(){
 
