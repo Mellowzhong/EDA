@@ -2,6 +2,38 @@
 #include <stdlib.h>
 #include <string.h>
 
+//Entrada: arreglo de enteros - filas de la matriz - columnas de la matriz
+//Salida: arreglo de enteros
+//Descripcion: Copio los datos del array dado a uno auxiliar
+char** copyArray(char** array, int filas, int columnas){
+
+    char** aux = (char**)malloc(filas * sizeof(char*));
+    for (int i = 0; i < columnas; i++){
+        aux[i] = (char*)malloc(columnas * sizeof(char));
+    }
+    
+    for(int i = 0; i < filas; i++){
+        for (int j = 0; j < columnas; j++){
+            aux[i][j] = array[i][j];
+        }
+    }
+
+    return aux;
+}
+
+char** crar_matriz(int filas, int columnas){
+    char** new = (char **)malloc(columnas * sizeof(char *));
+
+    for (int i = 0; i < columnas; i++) {
+        new[i] = (char *)malloc(filas * sizeof(char)); 
+    }
+
+    return new;
+}
+
+//Entrada: arreglo que contiene un arreglo de caracteres - filas de la matriz - columnas de la matriz
+//Salida: void
+//Descripcion: Imprime en pantalla la matriz dada dado
 void show_matriz(char** matriz, int x, int y){
 
     for (int i = 0; i < x; i++) {
@@ -12,34 +44,35 @@ void show_matriz(char** matriz, int x, int y){
     }
 }
 
-void imprimir(char* arreglo, int n){
-    int i;
-    for(i = 0; i < n; i++){
-        printf("%c ", arreglo[i]);
+//Entrada: arreglo que contiene un arreglo de caracteres - largo del arreglo dado
+//Salida: void
+//Descripcion: Imprime en pantalla el array dado
+void show_array(char** arreglo, int n){
+    for(int i = 0; i < n; i++){
+        printf("%s ", arreglo[i]);
     }
-    printf("\n");
 }
 
+//Entrada: nombre del archivo - filas - columnas
+//Salida: arreglo que contiene una arreglo de caracteres 
+//Descripcion: lee un archivo y entrega una matriz con los caracteres dados en este
 char** leerArchivoMatriz(char* fileName, int* x, int* y){
     FILE* file;
-    char **matriz;
     int filas, columnas;
     int i, j;
 
     file = fopen(fileName, "r");
 
-    if (file == NULL) {
-        printf("No se pudo abrir el archivo.\n");
+    if (file == NULL) { //Si no se puede abrir el archivo se finaliza
+        printf("No se pudo abrir el archivo de la sopa de letras\n");
         exit(1);
     }
 
     fscanf(file, "%d %d", &filas, &columnas);
 
-    matriz = (char **)malloc(filas * sizeof(char *));
-    for (i = 0; i < filas; i++) {
-        matriz[i] = (char *)malloc(columnas * sizeof(char));
-    }
+    char** matriz = crar_matriz(filas, columnas);
 
+    //copia los caracteres a la matriz
     for (i = 0; i < filas; i++) {
         for (j = 0; j < columnas; j++) {
             fscanf(file, " %c", &matriz[i][j]); 
@@ -54,65 +87,94 @@ char** leerArchivoMatriz(char* fileName, int* x, int* y){
     return matriz;
 }
 
-void leerArchivoPalabras(char* fileName, int* size_array){
+//Entrada: nombre del archivo - largo del arreglo de las palabras
+//Salida: arreglo que contiene una arreglo de caracteres
+//Descripcion: Lee un archivo y crea un arreglo con las palabras dadas en este mismo
+char** leerArchivoPalabras(char* fileName, int* size_array_words){
 
-    FILE *archivo = fopen(fileName, "r");
+    FILE *file = fopen(fileName, "r");
+    char line[100];
+    int size_words;
 
-    if (archivo == NULL) {
-        perror("Error al abrir el archivo");
+    if (file == NULL) { //Si no se puede abrir el archivo se finaliza
+        printf("Error al abrir el archivo de las palabras");
         exit(1);
     }
+    fscanf(file, "%d", &size_words);
+    fgetc(file);
 
-    int cantidadPalabras;
-    fscanf(archivo, "%d", &cantidadPalabras);
-    fgetc(archivo); // Consumir el carácter de nueva línea después del número
+    char **array_words = (char **)malloc(size_words * sizeof(char *));
 
-    char **listaPalabras = (char **)malloc(cantidadPalabras * sizeof(char *));
-    if (listaPalabras == NULL) {
-        perror("Error al asignar memoria");
-        exit(1);
-    }
-
-    char linea[100];
-
-    for (int i = 0; i < cantidadPalabras; i++) {
-        if (fgets(linea, sizeof(linea), archivo) != NULL) {
-            linea[strcspn(linea, "\n")] = '\0'; // Eliminar el carácter de nueva línea si está presente
-            listaPalabras[i] = strdup(linea); // Almacenar la palabra en la lista
-        } else {
-            fprintf(stderr, "Error al leer la línea %d\n", i + 2);
+    //copia las palabras del archivo al arreglo
+    for (int i = 0; i < size_words; i++) {
+        if (fgets(line, sizeof(line), file) != NULL) {
+            line[strcspn(line, "\n")] = '\0';
+            array_words[i] = strdup(line); 
         }
     }
 
-    fclose(archivo);
+    fclose(file);
 
-    *size_array = cantidadPalabras;
+    *size_array_words = size_words; 
 
-    // Imprimir la lista de palabras
-    printf("Lista de palabras:\n");
-    for (int i = 0; i < cantidadPalabras; i++) {
-        printf("[%s]", listaPalabras[i]);
-        free(listaPalabras[i]); // Liberar la memoria asignada para cada palabra
+    return array_words;
+}
+
+int find(char** matriz, int filas, int columnas, char** array_words, int size_array_words){
+    for (int k = 0; k < size_array_words; k++){//recorro la lista de las palabras
+        //recorro la matriz
+        for (int y = 0; y < columnas; y++){
+            for (int x = 0; x < filas; x++){
+                if(matriz[y][x] == array_words[0][k]){
+                    //falta hacer el caso que verifique si la palabra existe
+                    printf("arra_word: %c\n", array_words[k][0]);
+                    printf("posicion: %d\n", x);
+                }
+            }
+        }
     }
-
-    free(listaPalabras); // Liberar la memoria de la lista de punteros
-
+    return 0;
 }
 
 int main() {
     
-    int filas, columnas, size_words;
+    int filas, columnas, size_array_words;
+    char matrix_fileName[100];
+    char words_fileName[100];
 
-    char** matriz = leerArchivoMatriz("tablero1.ini", &filas, &columnas);
+    printf("Ingrese el nombre del archivo con la sopa de letras:\n");
+    scanf("%s", matrix_fileName);
 
-    show_matriz(matriz, filas, columnas);
+    printf("Ingrese el nombre del archivo con las palabras:\n");
+    scanf("%s", words_fileName);
 
-    leerArchivoPalabras("lista1.lst", &size_words);
+    //un arreglo que contiene una lista con caracteres
+    char** matriz = leerArchivoMatriz(matrix_fileName, &filas, &columnas);
+    char** copy = copyArray(matriz, filas, columnas);
 
+    show_matriz(copy, filas, columnas);
+
+    //un arreglo que contiene una lista de caracteres(las palabras)
+    char** array_words = leerArchivoPalabras(words_fileName, &size_array_words);
+
+    show_array(array_words, size_array_words);
+
+    printf("\n");
+
+    int result = find(copy, filas, columnas, array_words, size_array_words);
+
+    printf("%d", result);
+
+    //se libera la memoria
     for (int i = 0; i < filas; i++) {
         free(matriz[i]);
     }
     free(matriz);
+
+    for(int i = 0; i < size_array_words; i++){
+        free(array_words[i]);
+    }
+    free(array_words);
 
     return 0;
 }
