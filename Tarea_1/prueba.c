@@ -120,15 +120,38 @@ char** leerArchivoPalabras(char* fileName, int* size_array_words){
     return array_words;
 }
 
-int find(char** matriz, int filas, int columnas, char** array_words, int size_array_words){
+void comprobation_right(char** matrix, int filas, int columnas, char* word, int y, int x){
+
+    char** copy_matrix = copyArray(matrix, filas, columnas);
+    int len_word = strlen(word);
+
+    for(int i = 0; i < len_word; i++){
+        if(matrix[y][x] == word[i]){
+            printf("se cumplio: %c,%c\n", matrix[y][x], word[i]);
+            matrix[y][x] == '*';
+            x++;
+        }else{
+            printf("no se cumplio: %c,%c\n", matrix[y][x], word[i]);
+            return;
+        }
+        printf("%c\n", word[i]);
+    }
+    printf("palabra pasada: %s\n", word);
+}
+
+int findWords(char** matrix, int filas, int columnas, char** array_words, int size_array_words){
     for (int k = 0; k < size_array_words; k++){//recorro la lista de las palabras
         //recorro la matriz
         for (int y = 0; y < columnas; y++){
             for (int x = 0; x < filas; x++){
-                if(matriz[y][x] == array_words[0][k]){
-                    //falta hacer el caso que verifique si la palabra existe
-                    printf("arra_word: %c\n", array_words[k][0]);
-                    printf("posicion: %d\n", x);
+                printf("[%c]", matrix[y][x]);
+                printf("array_word[%c]\n", array_words[k][0]);
+                if(matrix[y][x] == array_words[k][0]){
+                    printf("word: %s\n", array_words[k]);
+                    printf("iguales: %c,%c\n", array_words[k][0],matrix[y][x]);                    
+                    printf("posicion: y:%d, x:%d\n", y, x);
+                    comprobation_right(matrix, filas, columnas, array_words[k], y, x);
+                    //terminar las demas comprobaciones en las otras direcciones
                 }
             }
         }
@@ -149,10 +172,9 @@ int main() {
     scanf("%s", words_fileName);
 
     //un arreglo que contiene una lista con caracteres
-    char** matriz = leerArchivoMatriz(matrix_fileName, &filas, &columnas);
-    char** copy = copyArray(matriz, filas, columnas);
+    char** matrix = leerArchivoMatriz(matrix_fileName, &filas, &columnas);
 
-    show_matriz(copy, filas, columnas);
+    show_matriz(matrix, filas, columnas);
 
     //un arreglo que contiene una lista de caracteres(las palabras)
     char** array_words = leerArchivoPalabras(words_fileName, &size_array_words);
@@ -161,15 +183,15 @@ int main() {
 
     printf("\n");
 
-    int result = find(copy, filas, columnas, array_words, size_array_words);
+    int result = findWords(matrix, filas, columnas, array_words, size_array_words);
 
     printf("%d", result);
 
     //se libera la memoria
     for (int i = 0; i < filas; i++) {
-        free(matriz[i]);
+        free(matrix[i]);
     }
-    free(matriz);
+    free(matrix);
 
     for(int i = 0; i < size_array_words; i++){
         free(array_words[i]);
