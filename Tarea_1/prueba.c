@@ -2,11 +2,28 @@
 #include <stdlib.h>
 #include <string.h>
 
+void write_matrix(char** matrix, int filas, int columnas, char* matrix_name){
+    FILE *archivo = fopen(matrix_name, "a");
+    for(int i = 0; i < columnas; i++){
+        for (int j = 0; j < filas; j++){
+            fprintf(archivo, "[%c]", matrix[i][j]);
+        }
+        fprintf(archivo, "\n");
+    }
+    fprintf(archivo, "\n");
+    fclose(archivo);
+}
+
+void write_word(char* word, int y, int x, char* list_name){
+    FILE *archivo = fopen(list_name, "a");
+    fprintf(archivo,"%d %d (%s)\n", y+1, x+1, word);
+    fclose(archivo);
+}
+
 //Entrada: arreglo de enteros - filas de la matriz - columnas de la matriz
 //Salida: arreglo de enteros
 //Descripcion: Copio los datos del array dado a uno auxiliar
 char** copyArray(char** array, int filas, int columnas){
-
     char** aux = (char**)malloc(filas * sizeof(char*));
     for (int i = 0; i < columnas; i++){
         aux[i] = (char*)malloc(columnas * sizeof(char));
@@ -56,7 +73,7 @@ void show_array(char** arreglo, int n){
 //Entrada: nombre del archivo - filas - columnas
 //Salida: arreglo que contiene una arreglo de caracteres 
 //Descripcion: lee un archivo y entrega una matriz con los caracteres dados en este
-char** leerArchivoMatriz(char* fileName, int* x, int* y){
+char** readFileMatrix(char* fileName, int* x, int* y){
     FILE* file;
     int filas, columnas;
     int i, j;
@@ -90,7 +107,7 @@ char** leerArchivoMatriz(char* fileName, int* x, int* y){
 //Entrada: nombre del archivo - largo del arreglo de las palabras
 //Salida: arreglo que contiene una arreglo de caracteres
 //Descripcion: Lee un archivo y crea un arreglo con las palabras dadas en este mismo
-char** leerArchivoPalabras(char* fileName, int* size_array_words){
+char** readFileWords(char* fileName, int* size_array_words){
 
     FILE *file = fopen(fileName, "r");
     char line[100];
@@ -120,48 +137,176 @@ char** leerArchivoPalabras(char* fileName, int* size_array_words){
     return array_words;
 }
 
-void comprobation_right(char** matrix, int filas, int columnas, char* word, int y, int x){
-
+void comprobation_right(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
     char** copy_matrix = copyArray(matrix, filas, columnas);
     int len_word = strlen(word);
-
-    for(int i = 0; i < len_word; i++){
-        if(matrix[y][x] == word[i]){
-            printf("se cumplio: %c,%c\n", matrix[y][x], word[i]);
-            matrix[y][x] == '*';
-            x++;
-        }else{
-            printf("no se cumplio: %c,%c\n", matrix[y][x], word[i]);
+    int y_aux = y;
+    int x_aux = x;
+    for (int i = 0; i <= len_word; i++) {
+        if(i == len_word){
+            write_word(word, y_aux , x_aux, list_name);
+            write_matrix(copy_matrix, filas, columnas, matrix_name);
+        }
+        if (x < 0 || x >= columnas || y < 0 || y >= filas || matrix[y][x] != word[i]) {
             return;
         }
-        printf("%c\n", word[i]);
+        copy_matrix[y][x] = '*';
+        x++;
     }
-    printf("palabra pasada: %s\n", word);
 }
 
-int findWords(char** matrix, int filas, int columnas, char** array_words, int size_array_words){
+void comprobation_upper_right(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+    char** copy_matrix = copyArray(matrix, filas, columnas);
+    int len_word = strlen(word);
+    int y_aux = y;
+    int x_aux = x;
+    for (int i = 0; i <= len_word; i++) {
+        if(i == len_word){
+            write_word(word, y_aux , x_aux, list_name);
+            write_matrix(copy_matrix, filas, columnas, matrix_name);
+        }
+        if (x < 0 || x >= columnas || y < 0 || y >= filas || matrix[y][x] != word[i]) {
+            return;
+        }
+        copy_matrix[y][x] = '*';
+        x++;
+        y--;
+    }
+}
+
+void comprobation_upper(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+    char** copy_matrix = copyArray(matrix, filas, columnas);
+    int len_word = strlen(word);
+    int y_aux = y;
+    int x_aux = x;
+    for (int i = 0; i <= len_word; i++) {
+        if(i == len_word){
+            write_word(word, y_aux , x_aux, list_name);
+            write_matrix(copy_matrix, filas, columnas, matrix_name);
+        }
+        if (x < 0 || x >= columnas || y < 0 || y >= filas || matrix[y][x] != word[i]) {
+            return;
+        }
+        copy_matrix[y][x] = '*';
+        y--;
+    }
+}
+
+void comprobation_upper_left(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+    char** copy_matrix = copyArray(matrix, filas, columnas);
+    int len_word = strlen(word);
+    int y_aux = y;
+    int x_aux = x;
+    for (int i = 0; i <= len_word; i++) {
+        if(i == len_word){
+            write_word(word, y_aux , x_aux, list_name);
+            write_matrix(copy_matrix, filas, columnas, matrix_name);
+        }
+        if (x < 0 || x >= columnas || y < 0 || y >= filas || matrix[y][x] != word[i]) {
+            return;
+        }
+        copy_matrix[y][x] = '*';
+        x--;
+        y--;
+    }
+}
+void comprobation_left(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+    char** copy_matrix = copyArray(matrix, filas, columnas);
+    int len_word = strlen(word);
+    int y_aux = y;
+    int x_aux = x;
+    for (int i = 0; i <= len_word; i++) {
+        if(i == len_word){
+            write_word(word, y_aux , x_aux, list_name);
+            write_matrix(copy_matrix, filas, columnas, matrix_name);
+        }
+        if (x < 0 || x >= columnas || y < 0 || y >= filas || matrix[y][x] != word[i]) {
+            return;
+        }
+        copy_matrix[y][x] = '*';
+        x--;
+    }
+}
+
+void comprobation_down_left(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+    char** copy_matrix = copyArray(matrix, filas, columnas);
+    int len_word = strlen(word);
+    int y_aux = y;
+    int x_aux = x;
+    for (int i = 0; i <= len_word; i++) {
+        if(i == len_word){
+            write_word(word, y_aux , x_aux, list_name);
+            write_matrix(copy_matrix, filas, columnas, matrix_name);
+        }
+        if (x < 0 || x >= columnas || y < 0 || y >= filas || matrix[y][x] != word[i]) {
+            return;
+        }
+        copy_matrix[y][x] = '*';
+        x--;
+        y++;
+    }
+}
+
+void comprobation_down(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+    char** copy_matrix = copyArray(matrix, filas, columnas);
+    int len_word = strlen(word);
+    int y_aux = y;
+    int x_aux = x;
+    for (int i = 0; i <= len_word; i++) {
+        if(i == len_word){
+            write_word(word, y_aux , x_aux, list_name);
+            write_matrix(copy_matrix, filas, columnas, matrix_name);
+        }
+        if (x < 0 || x >= columnas || y < 0 || y >= filas || matrix[y][x] != word[i]) {
+            return;
+        }
+        copy_matrix[y][x] = '*';
+        y++;
+    }
+}
+
+void comprobation_down_right(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+    char** copy_matrix = copyArray(matrix, filas, columnas);
+    int len_word = strlen(word);
+    int y_aux = y;
+    int x_aux = x;
+    for (int i = 0; i <= len_word; i++) {
+        if(i == len_word){
+            write_word(word, y_aux , x_aux, list_name);
+            write_matrix(copy_matrix, filas, columnas, matrix_name);
+        }
+        if (x < 0 || x >= columnas || y < 0 || y >= filas || matrix[y][x] != word[i]) {
+            return;
+        }
+        copy_matrix[y][x] = '*';
+        x++;
+        y++;
+    }
+}
+
+void findWords(char** matrix, int filas, int columnas, char** array_words, int size_array_words, char* list_name, char* matrix_name){
     for (int k = 0; k < size_array_words; k++){//recorro la lista de las palabras
         //recorro la matriz
         for (int y = 0; y < columnas; y++){
             for (int x = 0; x < filas; x++){
-                printf("[%c]", matrix[y][x]);
-                printf("array_word[%c]\n", array_words[k][0]);
                 if(matrix[y][x] == array_words[k][0]){
-                    printf("word: %s\n", array_words[k]);
-                    printf("iguales: %c,%c\n", array_words[k][0],matrix[y][x]);                    
-                    printf("posicion: y:%d, x:%d\n", y, x);
-                    comprobation_right(matrix, filas, columnas, array_words[k], y, x);
-                    //terminar las demas comprobaciones en las otras direcciones
+                    comprobation_right(matrix, filas, columnas, array_words[k], y, x, list_name, matrix_name);
+                    comprobation_upper_right(matrix, filas, columnas, array_words[k], y, x, list_name, matrix_name);
+                    comprobation_upper(matrix, filas, columnas, array_words[k], y, x, list_name, matrix_name);
+                    comprobation_upper_left(matrix, filas, columnas, array_words[k], y, x, list_name, matrix_name);
+                    comprobation_left(matrix, filas, columnas, array_words[k], y, x, list_name, matrix_name);
+                    comprobation_down_left(matrix, filas, columnas, array_words[k], y, x, list_name, matrix_name);
+                    comprobation_down(matrix, filas, columnas, array_words[k], y, x, list_name, matrix_name);
+                    comprobation_down_right(matrix, filas, columnas, array_words[k], y, x, list_name, matrix_name);
                 }
             }
         }
     }
-    return 0;
 }
 
 int main() {
     
-    int filas, columnas, size_array_words;
+    int filas, columnas, size_array_words, final_size_array_words;
     char matrix_fileName[100];
     char words_fileName[100];
 
@@ -172,20 +317,22 @@ int main() {
     scanf("%s", words_fileName);
 
     //un arreglo que contiene una lista con caracteres
-    char** matrix = leerArchivoMatriz(matrix_fileName, &filas, &columnas);
-
-    show_matriz(matrix, filas, columnas);
+    char** matrix = readFileMatrix(matrix_fileName, &filas, &columnas);
 
     //un arreglo que contiene una lista de caracteres(las palabras)
-    char** array_words = leerArchivoPalabras(words_fileName, &size_array_words);
+    char** array_words = readFileWords(words_fileName, &size_array_words);
 
-    show_array(array_words, size_array_words);
+    char* matrix_name = strtok(matrix_fileName, ".");
+    strcat(matrix_name, ".out");
 
-    printf("\n");
+    char* list_name = strtok(words_fileName, ".");
+    strcat( list_name, ".out");
 
-    int result = findWords(matrix, filas, columnas, array_words, size_array_words);
+    FILE *archivo = fopen(list_name, "w");
+    fprintf(archivo, "0\n");
+    fclose(archivo);
 
-    printf("%d", result);
+    findWords(matrix, filas, columnas, array_words, size_array_words, list_name, matrix_name);
 
     //se libera la memoria
     for (int i = 0; i < filas; i++) {
