@@ -15,8 +15,27 @@ void write_matrix(char** matrix, int filas, int columnas, char* matrix_name){
 }
 
 void write_word(char* word, int y, int x, char* list_name){
-    FILE *archivo = fopen(list_name, "a");
-    fprintf(archivo,"%d %d (%s)\n", y+1, x+1, word);
+    FILE *archivo = fopen(list_name, "r+");
+    if (archivo == NULL) {
+        printf("Error al abrir el archivo");
+        exit(1);
+    }
+
+    int current_count;
+    if (fscanf(archivo, "%d", &current_count) != 1) {
+        printf("Error al leer la cantidad actual de elementos");
+        fclose(archivo);
+        exit(1);
+    }
+
+    current_count++;
+
+    fseek(archivo, 0, SEEK_SET);
+    fprintf(archivo, "%d", current_count);
+
+    fseek(archivo, 0, SEEK_END);
+    fprintf(archivo, "\n%d %d (%s)", y + 1, x + 1, word);
+
     fclose(archivo);
 }
 
