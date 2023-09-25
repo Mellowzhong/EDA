@@ -2,11 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+//Entrada: arreglo de arreglos de caracteres - filas de la matriz - columnas de la matriz - nombre del archivo
+//Salida: void
+//Descripcion: agrega la matriz solucion al archivo correspondiente
 void write_matrix(char** matrix, int filas, int columnas, char* matrix_name){
     FILE *archivo = fopen(matrix_name, "a");
     for(int i = 0; i < columnas; i++){
         for (int j = 0; j < filas; j++){
-            fprintf(archivo, "[%c]", matrix[i][j]);
+            fprintf(archivo, "%c", matrix[i][j]);
         }
         fprintf(archivo, "\n");
     }
@@ -14,15 +17,19 @@ void write_matrix(char** matrix, int filas, int columnas, char* matrix_name){
     fclose(archivo);
 }
 
+//Entrada: palara a agregar - filas de la matriz - columnas de la matriz - nombre del archivo
+//Salida: void
+//Descripcion: agrega una palabra al archivo correspondiente
 void write_word(char* word, int y, int x, char* list_name){
     FILE *archivo = fopen(list_name, "r+");
-    if (archivo == NULL) {
-        printf("Error al abrir el archivo");
+
+    if (archivo == NULL){ //Si no se logra abrir el archivo finaliza
+        printf("Error al abrir el archivo de la sopa de letras");
         exit(1);
     }
 
     int current_count;
-    if (fscanf(archivo, "%d", &current_count) != 1) {
+    if (fscanf(archivo, "%d", &current_count) != 1){ //si el numero inicial es 0 finaliza
         printf("Error al leer la cantidad actual de elementos");
         fclose(archivo);
         exit(1);
@@ -30,9 +37,11 @@ void write_word(char* word, int y, int x, char* list_name){
 
     current_count++;
 
+    //aqui seteo el nuevo contador
     fseek(archivo, 0, SEEK_SET);
     fprintf(archivo, "%d", current_count);
 
+    //aqui seteo el nuevo dato a agregar al final del archivo
     fseek(archivo, 0, SEEK_END);
     fprintf(archivo, "\n%d %d (%s)", y + 1, x + 1, word);
 
@@ -48,6 +57,7 @@ char** copyArray(char** array, int filas, int columnas){
         aux[i] = (char*)malloc(columnas * sizeof(char));
     }
     
+    //recorro la matriz
     for(int i = 0; i < filas; i++){
         for (int j = 0; j < columnas; j++){
             aux[i][j] = array[i][j];
@@ -57,7 +67,10 @@ char** copyArray(char** array, int filas, int columnas){
     return aux;
 }
 
-char** crar_matriz(int filas, int columnas){
+//Entrada: filas de la matriz - columnas de la matriz
+//Salida: una matriz
+//Descripcion: se arega el largo y el ancho, y se guarda memoria para crear la matriz
+char** create_matrix(int filas, int columnas){
     char** new = (char **)malloc(columnas * sizeof(char *));
 
     for (int i = 0; i < columnas; i++) {
@@ -65,28 +78,6 @@ char** crar_matriz(int filas, int columnas){
     }
 
     return new;
-}
-
-//Entrada: arreglo que contiene un arreglo de caracteres - filas de la matriz - columnas de la matriz
-//Salida: void
-//Descripcion: Imprime en pantalla la matriz dada dado
-void show_matriz(char** matriz, int x, int y){
-
-    for (int i = 0; i < x; i++) {
-        for (int j = 0; j < y; j++) {
-            printf("[%c]", matriz[i][j]);
-        }
-        printf("\n");
-    }
-}
-
-//Entrada: arreglo que contiene un arreglo de caracteres - largo del arreglo dado
-//Salida: void
-//Descripcion: Imprime en pantalla el array dado
-void show_array(char** arreglo, int n){
-    for(int i = 0; i < n; i++){
-        printf("%s ", arreglo[i]);
-    }
 }
 
 //Entrada: nombre del archivo - filas - columnas
@@ -106,7 +97,7 @@ char** readFileMatrix(char* fileName, int* x, int* y){
 
     fscanf(file, "%d %d", &filas, &columnas);
 
-    char** matriz = crar_matriz(filas, columnas);
+    char** matriz = create_matrix(filas, columnas);
 
     //copia los caracteres a la matriz
     for (i = 0; i < filas; i++) {
@@ -156,14 +147,19 @@ char** readFileWords(char* fileName, int* size_array_words){
     return array_words;
 }
 
-void comprobation_right(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+//Entrada: matriz - filas de la matriz - columnas de la matriz 
+        // - palabra a buscar - posicion y - posicion x - nombre del archivo donde se gurdaran las palabras
+        // - nombre del archivo donde se guardaran las matrices solucion
+//Salida: void
+//Descripcion: comprueba a la derecha en la sopa de letras si la palabra se encuentra en esa posicion
+void comprobation_right(char** matrix, int filas, int columnas,
+                        char* word, int y, int x, char* list_name, char* matrix_name) {
     char** copy_matrix = copyArray(matrix, filas, columnas);
     int len_word = strlen(word);
-    int y_aux = y;
-    int x_aux = x;
+
     for (int i = 0; i <= len_word; i++) {
         if(i == len_word){
-            write_word(word, y_aux , x_aux, list_name);
+            write_word(word, y , x, list_name);
             write_matrix(copy_matrix, filas, columnas, matrix_name);
         }
         if (x < 0 || x >= columnas || y < 0 || y >= filas || matrix[y][x] != word[i]) {
@@ -172,13 +168,26 @@ void comprobation_right(char** matrix, int filas, int columnas, char* word, int 
         copy_matrix[y][x] = '*';
         x++;
     }
+
+    free(copy_matrix);
+    for(int i = 0; i < columnas; i++){
+        free(copy_matrix[i]);
+    }
 }
 
-void comprobation_upper_right(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+//Entrada: matriz - filas de la matriz - columnas de la matriz 
+        // - palabra a buscar - posicion y - posicion x - nombre del archivo donde se gurdaran las palabras
+        // - nombre del archivo donde se guardaran las matrices solucion
+//Salida: void
+//Descripcion: comprueba a la derecha y arriba en la sopa de letras si la palabra se encuentra en esa posicion
+void comprobation_upper_right(char** matrix, int filas, int columnas,
+                              char* word, int y, int x, char* list_name, char* matrix_name) {
     char** copy_matrix = copyArray(matrix, filas, columnas);
     int len_word = strlen(word);
     int y_aux = y;
     int x_aux = x;
+
+    //recorro la palabra
     for (int i = 0; i <= len_word; i++) {
         if(i == len_word){
             write_word(word, y_aux , x_aux, list_name);
@@ -191,13 +200,26 @@ void comprobation_upper_right(char** matrix, int filas, int columnas, char* word
         x++;
         y--;
     }
+
+    free(copy_matrix);
+    for(int i = 0; i < columnas; i++){
+        free(copy_matrix[i]);
+    }
 }
 
-void comprobation_upper(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+//Entrada: matriz - filas de la matriz - columnas de la matriz 
+        // - palabra a buscar - posicion y - posicion x - nombre del archivo donde se gurdaran las palabras
+        // - nombre del archivo donde se guardaran las matrices solucion
+//Salida: void
+//Descripcion: comprueba arriba en la sopa de letras si la palabra se encuentra en esa posicion
+void comprobation_upper(char** matrix, int filas, int columnas,
+                         char* word, int y, int x, char* list_name, char* matrix_name) {
     char** copy_matrix = copyArray(matrix, filas, columnas);
     int len_word = strlen(word);
     int y_aux = y;
     int x_aux = x;
+
+    //recorro la palabra
     for (int i = 0; i <= len_word; i++) {
         if(i == len_word){
             write_word(word, y_aux , x_aux, list_name);
@@ -209,13 +231,26 @@ void comprobation_upper(char** matrix, int filas, int columnas, char* word, int 
         copy_matrix[y][x] = '*';
         y--;
     }
+
+    free(copy_matrix);
+    for(int i = 0; i < columnas; i++){
+        free(copy_matrix[i]);
+    }
 }
 
-void comprobation_upper_left(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+//Entrada: matriz - filas de la matriz - columnas de la matriz 
+        // - palabra a buscar - posicion y - posicion x - nombre del archivo donde se gurdaran las palabras
+        // - nombre del archivo donde se guardaran las matrices solucion
+//Salida: void
+//Descripcion: comprueba arriba y a la izquierda en la sopa de letras si la palabra se encuentra en esa posicion
+void comprobation_upper_left(char** matrix, int filas, int columnas,
+                             char* word, int y, int x, char* list_name, char* matrix_name) {
     char** copy_matrix = copyArray(matrix, filas, columnas);
     int len_word = strlen(word);
     int y_aux = y;
     int x_aux = x;
+
+    //recorro la palabra
     for (int i = 0; i <= len_word; i++) {
         if(i == len_word){
             write_word(word, y_aux , x_aux, list_name);
@@ -228,12 +263,26 @@ void comprobation_upper_left(char** matrix, int filas, int columnas, char* word,
         x--;
         y--;
     }
+
+    free(copy_matrix);
+    for(int i = 0; i < columnas; i++){
+        free(copy_matrix[i]);
+    }
 }
-void comprobation_left(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+
+//Entrada: matriz - filas de la matriz - columnas de la matriz 
+        // - palabra a buscar - posicion y - posicion x - nombre del archivo donde se gurdaran las palabras
+        // - nombre del archivo donde se guardaran las matrices solucion
+//Salida: void
+//Descripcion: comprueba a la izquierda en la sopa de letras si la palabra se encuentra en esa posicion
+void comprobation_left(char** matrix, int filas, int columnas,
+                      char* word, int y, int x, char* list_name, char* matrix_name) {
     char** copy_matrix = copyArray(matrix, filas, columnas);
     int len_word = strlen(word);
     int y_aux = y;
     int x_aux = x;
+
+    //recorro la palabra
     for (int i = 0; i <= len_word; i++) {
         if(i == len_word){
             write_word(word, y_aux , x_aux, list_name);
@@ -245,8 +294,18 @@ void comprobation_left(char** matrix, int filas, int columnas, char* word, int y
         copy_matrix[y][x] = '*';
         x--;
     }
+
+    free(copy_matrix);
+    for(int i = 0; i < columnas; i++){
+        free(copy_matrix[i]);
+    }
 }
 
+//Entrada: matriz - filas de la matriz - columnas de la matriz 
+        // - palabra a buscar - posicion y - posicion x - nombre del archivo donde se gurdaran las palabras
+        // - nombre del archivo donde se guardaran las matrices solucion
+//Salida: void
+//Descripcion: comprueba abajo a la izquierda en la sopa de letras si la palabra se encuentra en esa posicion
 void comprobation_down_left(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
     char** copy_matrix = copyArray(matrix, filas, columnas);
     int len_word = strlen(word);
@@ -264,13 +323,26 @@ void comprobation_down_left(char** matrix, int filas, int columnas, char* word, 
         x--;
         y++;
     }
+
+    free(copy_matrix);
+    for(int i = 0; i < columnas; i++){
+        free(copy_matrix[i]);
+    }
 }
 
-void comprobation_down(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+//Entrada: matriz - filas de la matriz - columnas de la matriz 
+        // - palabra a buscar - posicion y - posicion x - nombre del archivo donde se gurdaran las palabras
+        // - nombre del archivo donde se guardaran las matrices solucion
+//Salida: void
+//Descripcion: comprueba abajo en la sopa de letras si la palabra se encuentra en esa posicion
+void comprobation_down(char** matrix, int filas, int columnas, 
+                        char* word, int y, int x, char* list_name, char* matrix_name) {
     char** copy_matrix = copyArray(matrix, filas, columnas);
     int len_word = strlen(word);
     int y_aux = y;
     int x_aux = x;
+
+    //recorro la palabra
     for (int i = 0; i <= len_word; i++) {
         if(i == len_word){
             write_word(word, y_aux , x_aux, list_name);
@@ -282,13 +354,26 @@ void comprobation_down(char** matrix, int filas, int columnas, char* word, int y
         copy_matrix[y][x] = '*';
         y++;
     }
+
+    free(copy_matrix);
+    for(int i = 0; i < columnas; i++){
+        free(copy_matrix[i]);
+    }
 }
 
-void comprobation_down_right(char** matrix, int filas, int columnas, char* word, int y, int x, char* list_name, char* matrix_name) {
+//Entrada: arreglo de arreglos de caracteres - filas de la matriz - columnas de la matriz 
+        // - palabra a buscar - posicion y - posicion x - nombre del archivo donde se gurdaran las palabras
+        // - nombre del archivo donde se guardaran las matrices solucion
+//Salida: void
+//Descripcion: comprueba abajo a la derecha en la sopa de letras si la palabra se encuentra en esa posicion
+void comprobation_down_right(char** matrix, int filas, int columnas,
+                             char* word, int y, int x, char* list_name, char* matrix_name) {
     char** copy_matrix = copyArray(matrix, filas, columnas);
     int len_word = strlen(word);
     int y_aux = y;
     int x_aux = x;
+
+    //recorro la palabra
     for (int i = 0; i <= len_word; i++) {
         if(i == len_word){
             write_word(word, y_aux , x_aux, list_name);
@@ -301,8 +386,17 @@ void comprobation_down_right(char** matrix, int filas, int columnas, char* word,
         x++;
         y++;
     }
+
+    free(copy_matrix);
+    for(int i = 0; i < columnas; i++){
+        free(copy_matrix[i]);
+    }
 }
 
+//Entrada: la matriz - filas de la matriz - columnas de la matriz - arreglo de las palabras - 
+        // - tamaño del arreglo de las palabras - nombre del archivo de las palabras - nombre del archivo de las matrices
+//Salida: void
+//Descripcion: comprueba a la derecha en la sopa de letras si la palabra se encuentra en esa posicion
 void findWords(char** matrix, int filas, int columnas, char** array_words, int size_array_words, char* list_name, char* matrix_name){
     for (int k = 0; k < size_array_words; k++){//recorro la lista de las palabras
         //recorro la matriz
@@ -329,6 +423,7 @@ int main() {
     char matrix_fileName[100];
     char words_fileName[100];
 
+    //se pide los datos
     printf("Ingrese el nombre del archivo con la sopa de letras:\n");
     scanf("%s", matrix_fileName);
 
@@ -341,16 +436,19 @@ int main() {
     //un arreglo que contiene una lista de caracteres(las palabras)
     char** array_words = readFileWords(words_fileName, &size_array_words);
 
+    //se crean los nombres de los archivos de salida
     char* matrix_name = strtok(matrix_fileName, ".");
     strcat(matrix_name, ".out");
 
     char* list_name = strtok(words_fileName, ".");
     strcat( list_name, ".out");
 
+    //Se agrega el contador al archivo de salida de las palabras
     FILE *archivo = fopen(list_name, "w");
     fprintf(archivo, "0\n");
     fclose(archivo);
 
+    //Encuentras la palabras en la sopa de letras y las manda a su archivo de salida correspondiente
     findWords(matrix, filas, columnas, array_words, size_array_words, list_name, matrix_name);
 
     //se libera la memoria
