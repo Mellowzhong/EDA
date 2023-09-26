@@ -7,12 +7,6 @@ void imprimir(int *arreglo, int n){
     printf("\n");
 }
 
-void intercambiar(int *a, int *b){
-    int aux = *a;
-    *a = *b;
-    *b = aux;
-}
-
 void swap(int* array, int a, int b){
     int aux = array[a];
 

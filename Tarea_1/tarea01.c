@@ -418,7 +418,6 @@ void findWords(char** matrix, int filas, int columnas, char** array_words, int s
 }
 
 int main() {
-    
     int filas, columnas, size_array_words, final_size_array_words;
     char matrix_fileName[100];
     char words_fileName[100];
@@ -443,13 +442,16 @@ int main() {
     char* list_name = strtok(words_fileName, ".");
     strcat( list_name, ".out");
 
-    //Se agrega el contador al archivo de salida de las palabras
-    FILE *archivo = fopen(list_name, "w");
-    fprintf(archivo, "0\n");
-    fclose(archivo);
+    FILE *file = fopen(list_name, "w");
+    fprintf(file, "0\n");
+    fclose(file);
 
     //Encuentras la palabras en la sopa de letras y las manda a su archivo de salida correspondiente
     findWords(matrix, filas, columnas, array_words, size_array_words, list_name, matrix_name);
+
+    file = fopen(list_name, "w");
+    fprintf(file, "%d", 2);
+    fclose(file);
 
     //se libera la memoria
     for (int i = 0; i < filas; i++) {
