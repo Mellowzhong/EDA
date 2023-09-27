@@ -7,6 +7,7 @@
 //Descripcion: agrega la matriz solucion al archivo correspondiente
 void write_matrix(char** matrix, int filas, int columnas, char* matrix_name){
     FILE *archivo = fopen(matrix_name, "a");
+
     for(int i = 0; i < columnas; i++){
         for (int j = 0; j < filas; j++){
             fprintf(archivo, "%c", matrix[i][j]);
@@ -21,14 +22,15 @@ void write_matrix(char** matrix, int filas, int columnas, char* matrix_name){
 //Salida: void
 //Descripcion: agrega una palabra al archivo correspondiente
 void write_word(char* word, int y, int x, char* list_name){
+
     FILE *archivo = fopen(list_name, "r+");
+    int current_count;
 
     if (archivo == NULL){ //Si no se logra abrir el archivo finaliza
         printf("Error al abrir el archivo de la sopa de letras");
         exit(1);
     }
 
-    int current_count;
     if (fscanf(archivo, "%d", &current_count) != 1){ //si el numero inicial es 0 finaliza
         printf("Error al leer la cantidad actual de elementos");
         fclose(archivo);
@@ -91,11 +93,16 @@ char** readFileMatrix(char* fileName, int* x, int* y){
     file = fopen(fileName, "r");
 
     if (file == NULL) { //Si no se puede abrir el archivo se finaliza
-        printf("No se pudo abrir el archivo de la sopa de letras\n");
+        printf("No se pudo abrir el archivo de la sopa de letras, no se encontro\n");
         exit(1);
     }
 
     fscanf(file, "%d %d", &filas, &columnas);
+
+    if(filas == 0 || columnas == 0) {
+        printf("Error en los datos de las filas y las columnas, por favor revisar archivo");
+        exit(1);
+    }
 
     char** matriz = create_matrix(filas, columnas);
 
@@ -111,6 +118,8 @@ char** readFileMatrix(char* fileName, int* x, int* y){
     *x = filas;
     *y = columnas;
 
+
+    printf("Se pudo leer el archivo de la sopa de letras correctamente\n");
     return matriz;
 }
 
@@ -124,11 +133,17 @@ char** readFileWords(char* fileName, int* size_array_words){
     int size_words;
 
     if (file == NULL) { //Si no se puede abrir el archivo se finaliza
-        printf("Error al abrir el archivo de las palabras");
+        printf("Error al abrir el archivo de las palabras, no se encontro\n");
         exit(1);
     }
+
     fscanf(file, "%d", &size_words);
     fgetc(file);
+
+    if(size_words == 0){
+        printf("No hay letras que obtener, revise el archivo");
+        exit(1);
+    }
 
     char **array_words = (char **)malloc(size_words * sizeof(char *));
 
@@ -144,6 +159,7 @@ char** readFileWords(char* fileName, int* size_array_words){
 
     *size_array_words = size_words; 
 
+    printf("Se pudo leer correctamente el archivo de las palabras\n");
     return array_words;
 }
 
@@ -402,7 +418,7 @@ void findWords(char** matrix, int filas, int columnas, char** array_words, int s
         //recorro la matriz
         for (int y = 0; y < columnas; y++){
             for (int x = 0; x < filas; x++){
-                if(matrix[y][x] == array_words[k][0]){
+                if(matrix[y][x] == array_words[k][0]){//se buscan las soluciones
                     comprobation_right(matrix, filas, columnas, array_words[k], y, x, list_name, matrix_name);
                     comprobation_upper_right(matrix, filas, columnas, array_words[k], y, x, list_name, matrix_name);
                     comprobation_upper(matrix, filas, columnas, array_words[k], y, x, list_name, matrix_name);
@@ -417,17 +433,11 @@ void findWords(char** matrix, int filas, int columnas, char** array_words, int s
     }
 }
 
-int main() {
+int main(int argc, char * argv[]) {
     int filas, columnas, size_array_words, final_size_array_words;
-    char matrix_fileName[100];
-    char words_fileName[100];
 
-    //se pide los datos
-    printf("Ingrese el nombre del archivo con la sopa de letras:\n");
-    scanf("%s", matrix_fileName);
-
-    printf("Ingrese el nombre del archivo con las palabras:\n");
-    scanf("%s", words_fileName);
+    char* matrix_fileName = argv[1];
+    char* words_fileName = argv[2];
 
     //un arreglo que contiene una lista con caracteres
     char** matrix = readFileMatrix(matrix_fileName, &filas, &columnas);
@@ -449,9 +459,13 @@ int main() {
     //Encuentras la palabras en la sopa de letras y las manda a su archivo de salida correspondiente
     findWords(matrix, filas, columnas, array_words, size_array_words, list_name, matrix_name);
 
-    file = fopen(list_name, "w");
-    fprintf(file, "%d", 2);
+    file = fopen(list_name, "r");
+    fscanf(file, "%d", &final_size_array_words);
     fclose(file);
+
+    printf("Se pudo completar la busqueda exitosamente\n");
+    printf("numero de palabras buscadas: %d \nnumero de palabras encoentradas: %d\n", size_array_words, final_size_array_words);
+    printf("Los archivos de salida son: %s y %s", matrix_name, list_name);
 
     //se libera la memoria
     for (int i = 0; i < filas; i++) {
