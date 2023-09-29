@@ -24,10 +24,10 @@ void write_matrix(char** matrix, int filas, int columnas, char* matrix_name){
 void write_word(char* word, int y, int x, char* list_name){
 
     FILE *archivo = fopen(list_name, "r+");
-    int current_count;
+    int current_count = 0;
 
     if (archivo == NULL){ //Si no se logra abrir el archivo finaliza
-        printf("Error al abrir el archivo de la sopa de letras");
+        printf("Error al abrir el archivo de las palabras");   
         exit(1);
     }
 
@@ -50,25 +50,6 @@ void write_word(char* word, int y, int x, char* list_name){
     fclose(archivo);
 }
 
-//Entrada: arreglo de enteros - filas de la matriz - columnas de la matriz
-//Salida: arreglo de enteros
-//Descripcion: Copio los datos del array dado a uno auxiliar
-char** copyArray(char** array, int filas, int columnas){
-    char** aux = (char**)malloc(filas * sizeof(char*));
-    for (int i = 0; i < columnas; i++){
-        aux[i] = (char*)malloc(columnas * sizeof(char));
-    }
-    
-    //recorro la matriz
-    for(int i = 0; i < filas; i++){
-        for (int j = 0; j < columnas; j++){
-            aux[i][j] = array[i][j];
-        }
-    }
-
-    return aux;
-}
-
 //Entrada: filas de la matriz - columnas de la matriz
 //Salida: una matriz
 //Descripcion: se arega el largo y el ancho, y se guarda memoria para crear la matriz
@@ -80,6 +61,22 @@ char** create_matrix(int filas, int columnas){
     }
 
     return new;
+}
+
+//Entrada: arreglo de enteros - filas de la matriz - columnas de la matriz
+//Salida: arreglo de enteros
+//Descripcion: Copio los datos del array dado a uno auxiliar
+char** copyArray(char** array, int filas, int columnas){
+    char** aux = create_matrix(filas, columnas);
+    
+    //recorro la matriz
+    for(int i = 0; i < filas; i++){
+        for (int j = 0; j < columnas; j++){
+            aux[i][j] = array[i][j];
+        }
+    }
+
+    return aux;
 }
 
 //Entrada: nombre del archivo - filas - columnas
