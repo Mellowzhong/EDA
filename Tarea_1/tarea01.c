@@ -27,7 +27,7 @@ void write_word(char* word, int y, int x, char* list_name){
     int current_count = 0;
 
     if (archivo == NULL){ //Si no se logra abrir el archivo finaliza
-        printf("Error al abrir el archivo de las palabras");   
+        printf("Error al abrir el archivo de salida de las palabras");   
         exit(1);
     }
 
@@ -69,7 +69,7 @@ char** create_matrix(int filas, int columnas){
 char** copyArray(char** array, int filas, int columnas){
     char** aux = create_matrix(filas, columnas);
     
-    //recorro la matriz
+    //recorro y copio la matriz
     for(int i = 0; i < filas; i++){
         for (int j = 0; j < columnas; j++){
             aux[i][j] = array[i][j];
@@ -83,11 +83,9 @@ char** copyArray(char** array, int filas, int columnas){
 //Salida: arreglo que contiene una arreglo de caracteres 
 //Descripcion: lee un archivo y entrega una matriz con los caracteres dados en este
 char** readFileMatrix(char* fileName, int* x, int* y){
-    FILE* file;
-    int filas, columnas;
-    int i, j;
+    int filas, columnas, i, j;
 
-    file = fopen(fileName, "r");
+    FILE* file = fopen(fileName, "r");
 
     if (file == NULL) { //Si no se puede abrir el archivo se finaliza
         printf("No se pudo abrir el archivo de la sopa de letras, no se encontro\n");
