@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 //Entrada: arreglo de arreglos de caracteres - filas de la matriz - columnas de la matriz - nombre del archivo
 //Salida: void
@@ -10,7 +11,7 @@ void write_matrix(char** matrix, int filas, int columnas, char* matrix_name){
 
     for(int i = 0; i < columnas; i++){
         for (int j = 0; j < filas; j++){
-            fprintf(archivo, "%c", matrix[i][j]);
+            fprintf(archivo, "%c ", matrix[i][j]);
         }
         fprintf(archivo, "\n");
     }
@@ -24,10 +25,10 @@ void write_matrix(char** matrix, int filas, int columnas, char* matrix_name){
 void write_word(char* word, int y, int x, char* list_name){
 
     FILE *archivo = fopen(list_name, "r+");
-    int current_count = 0;
+    int current_count;
 
     if (archivo == NULL){ //Si no se logra abrir el archivo finaliza
-        printf("Error al abrir el archivo de salida de las palabras");   
+        printf("Error al abrir el archivo de la sopa de letras");
         exit(1);
     }
 
@@ -69,7 +70,7 @@ char** create_matrix(int filas, int columnas){
 char** copyArray(char** array, int filas, int columnas){
     char** aux = create_matrix(filas, columnas);
     
-    //recorro y copio la matriz
+    //recorro la matriz
     for(int i = 0; i < filas; i++){
         for (int j = 0; j < columnas; j++){
             aux[i][j] = array[i][j];
@@ -83,9 +84,11 @@ char** copyArray(char** array, int filas, int columnas){
 //Salida: arreglo que contiene una arreglo de caracteres 
 //Descripcion: lee un archivo y entrega una matriz con los caracteres dados en este
 char** readFileMatrix(char* fileName, int* x, int* y){
-    int filas, columnas, i, j;
+    FILE* file;
+    int filas, columnas;
+    int i, j;
 
-    FILE* file = fopen(fileName, "r");
+    file = fopen(fileName, "r");
 
     if (file == NULL) { //Si no se puede abrir el archivo se finaliza
         printf("No se pudo abrir el archivo de la sopa de letras, no se encontro\n");
@@ -430,7 +433,8 @@ void findWords(char** matrix, int filas, int columnas, char** array_words, int s
 
 int main(int argc, char * argv[]) {
     int filas, columnas, size_array_words, final_size_array_words;
-
+	clock_t cini, cfin;
+	double tiempo;
     char* matrix_fileName = argv[1];
     char* words_fileName = argv[2];
 
@@ -447,12 +451,18 @@ int main(int argc, char * argv[]) {
     char* list_name = strtok(words_fileName, ".");
     strcat( list_name, ".out");
 
+    //Abro el archivo de salida de las palabras para iniciar el contador
     FILE *file = fopen(list_name, "w");
     fprintf(file, "0\n");
     fclose(file);
 
+    cini=clock();
     //Encuentras la palabras en la sopa de letras y las manda a su archivo de salida correspondiente
     findWords(matrix, filas, columnas, array_words, size_array_words, list_name, matrix_name);
+	cfin=clock();
+	tiempo= (double)(cfin-cini)/CLOCKS_PER_SEC;
+
+    printf("El tiempo que se demoro en encontar todas las palabras es: %f\n", tiempo);
 
     file = fopen(list_name, "r");
     fscanf(file, "%d", &final_size_array_words);

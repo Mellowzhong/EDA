@@ -54,11 +54,9 @@ int main (int argc, char * argv[]){
 	ciniIt=clock();
 	long resultado_iterativa = potenciaIterativa(base, exponente);
 	cfinIt=clock();
-		printf("fin de linea\n");
 	ciniRe=clock();
 	long resultado_recursiva = potenciaRecursiva(base, exponente);
 	cfinRe=clock();
-			printf("no se muere");
 	tiempoIt= (double)(cfinIt-ciniIt)/CLOCKS_PER_SEC;
 	tiempoRe= (double)(cfinRe-ciniRe)/CLOCKS_PER_SEC;
 
