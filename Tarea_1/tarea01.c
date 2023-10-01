@@ -9,8 +9,8 @@
 void write_matrix(char** matrix, int filas, int columnas, char* matrix_name){
     FILE *archivo = fopen(matrix_name, "a");
 
-    for(int i = 0; i < columnas; i++){
-        for (int j = 0; j < filas; j++){
+    for(int i = 0; i < filas; i++){
+        for (int j = 0; j < columnas; j++){
             fprintf(archivo, "%c ", matrix[i][j]);
         }
         fprintf(archivo, "\n");
