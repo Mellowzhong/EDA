@@ -180,12 +180,18 @@ nodo* obtenerNodo(TDAlista lista, int posicion){
   return aux;
 }
 
+//Dom: lista con los nodos
+//Rec: void
+//Descripcion: elimina todos los nodos de la lista dejandola vacia
 void liberarLista(TDAlista* lista){
   while (!(esListaVacia(*lista))){
     eliminarInicio(lista);
   }
 }
 
+//Dom: lista_1 con los nodos - lista_2 con los nodos
+//Rec: boleano
+//Descripcion: comprueba que la lista_1 sea igual a la lista_2, si es asi devuelve true, sino sera false
 bool equalList(TDAlista* lista_1, TDAlista* lista_2){
   nodo* aux_1 = *lista_1;
   nodo* aux_2 = *lista_2;
@@ -202,6 +208,9 @@ bool equalList(TDAlista* lista_1, TDAlista* lista_2){
   return true;
 }
 
+//Dom: lista con los nodos
+//Rec: void
+//Descripcion: invierte la lista entregada
 void invertirList(TDAlista* lista){
   nodo* aux = *lista;
   nodo* aux_inv = crearListaVacia();
