@@ -88,6 +88,7 @@ int particiona(int* arreglo, int izquierda, int derecha) {
 		}
 	}
 }
+
 void quicksort(int* arreglo, int inicio, int final){
     if(inicio < final){
         int pivote = particiona(arreglo, inicio, final);

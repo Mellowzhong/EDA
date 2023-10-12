@@ -44,7 +44,7 @@ int* ranking(int* Dataset, int Q, int size){
         array[i] = aux;
     }
 
-    ordenamientoBurbuja(array, size, Dataset);
+    ordenamientoBurbuja(array, size, Dataset); // Se pasa el Dataset para que cuando se haga el swap tambien lo haga en el Dataset
 
     return Dataset;
 }
