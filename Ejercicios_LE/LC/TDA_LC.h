@@ -1,93 +1,200 @@
-#ifndef TDA_LC_h
-#define TDA_LC_h
-
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct nodo{
-    int data;
-    struct nodo *next;
-    
-}Nodo;
+/*------------- estructura de datos -------------*/
 
-typedef struct list{  
-    Nodo* head;
-    int count;
+typedef struct nodoGenerico
+{
+  int dato;
+  struct nodoGenerico* puntero;
+}nodo;
 
-}List;
+typedef nodo* TDAlista;
 
-int is_void_list(List* list){
-    if(list->head == NULL){
-        return 1;
-    }
+/*------------- operaciones -------------*/
+
+TDAlista crearListaVacia()
+{
+  TDAlista lista=(TDAlista)malloc(sizeof(TDAlista));
+  lista=NULL;
+  return lista;
+}
+
+int esListaVacia(TDAlista lista)
+{
+  if (lista == NULL)
+    return 1;
+  else
     return 0;
 }
 
-List* create_list(){
-    List* new_list = (List*)malloc(sizeof(List));
-    new_list->head = NULL;
-    new_list->count = 0;
+void recorrerLista(TDAlista lista)
+{
+  if (!esListaVacia(lista))
+  {
+    TDAlista actual = lista;
 
-    return new_list;
+    // Verifica si la lista no está vacía
+    if (lista != NULL) {
+        do {
+            printf("%d ", actual->dato);
+            actual = actual->puntero;
+        } while (actual != lista);
+    }
+
+    printf("\n");
+  }
+  else
+    printf("La lista está vacía\n");
 }
 
-Nodo* crear_nodo(int value){
-    Nodo* new_nodo = (Nodo*)malloc(sizeof(Nodo));
-
-    new_nodo->data = value;
-    new_nodo->next = NULL;
-    
-    return new_nodo;
+void insertarInicio(TDAlista* lista, int dato)
+{
+  nodo* nuevo=(nodo*)malloc(sizeof(nodo));
+  nuevo->dato=dato;
+  nuevo->puntero=nuevo;
+  *lista=nuevo;
 }
 
-void show_list(List list){
-    Nodo* aux = list.head;
-    Nodo* inicio = aux;
+void eliminarInicio(TDAlista* lista)
+{
+  nodo* auxiliar;
+  if(!esListaVacia(*lista))
+  {
+    auxiliar=*lista;
+    *lista=(*lista)->puntero;
+    free(auxiliar);
+  }
+}
+
+/*------------- Actividad 1 -------------*/
+//Dom: lista con los nodos
+//Rec: numero de nodos
+//Descripcion: entrega el numero de nodos de la lista
+int obtenerNumNodos(TDAlista lista){
+  if(!esListaVacia(lista)){
     int count = 0;
-    printf("\nData->");
-
-    while (count != list.count){
-        printf("%d\n", aux->data);
-        aux = aux->next;
-        count++;
+    nodo* auxiliar = lista;
+    
+    while (auxiliar != NULL){
+      auxiliar = auxiliar->puntero;
+      count++;
     }
+    return count;
+
+  }else{
+    return 0;
+  }
 }
 
-void agregar_nodo_ini(List* list, int value){
-    Nodo* new_nodo = crear_nodo(value);
-    new_nodo->next = list->head;
-
-    list->head = new_nodo;
-    list->count = list->count + 1;
-}
-
-void agregar_nodo_final(List* list, int value){
-    Nodo* aux = list->head;
-    printf("nodos: %d", list->count);
-
-    while(aux->next != NULL){
-        aux = aux->next;
-    }
-
-    Nodo* new_nodo = crear_nodo(value);
-    aux->next = new_nodo;
-    list->count = list->count + 1;
-}
-
-void agregar_nodo(List* list, int value, int search_value){
-    Nodo* new_nodo = crear_nodo(value);
-    Nodo* aux = list->head;
-    Nodo* before = NULL;
-    Nodo* inicio = list->head;
-
-    if (!is_void_list(list)){
-        while (aux->data != search_value){
-            before = aux;
-            aux = aux->next;
+/*------------- Actividad 2 -------------*/
+//Dom: lista con los nodos - dato a buscar
+//Rec: entrega si se econtro el dato
+//Descripcion: busca un dato dentro de la lista
+int buscarDatoLista(TDAlista lista, int dato){
+  if(!esListaVacia(lista)){
+      nodo* aux = lista;
+      while (aux->dato != dato){
+        if(aux->puntero == NULL){
+          return 0;
         }
-        before->next = new_nodo;
-        new_nodo->next = aux;
-    }
-}   
+        aux = aux->puntero;
+      }
+      return 1;
+  }
+}
 
-#endif
+/*------------- Actividad 3 -------------*/
+//Dom: lista con los nodos - dato a insertar
+//Rec: void
+//Descripcion: agrega un nodo al final de la lista
+void insertarNodoFinal(TDAlista* lista, int dato){
+  if(!esListaVacia(*lista)){
+    // Crear un nuevo nodo
+    nodo* nuevoNodo = (nodo*)malloc(sizeof(nodo));
+    nuevoNodo->dato = dato;
+    nuevoNodo->puntero = *lista; // El nuevo nodo apunta al primer nodo
+
+    // Verificar si la lista está vacía
+    if (lista == NULL) {
+        *lista = nuevoNodo; // El nuevo nodo es el único en la lista
+    } else {
+        // Encontrar el último nodo
+        nodo* ultimo = *lista;
+        while (ultimo->puntero != *lista) {
+            ultimo = ultimo->puntero;
+        }
+
+        // Agregar el nuevo nodo al final
+        ultimo->puntero = nuevoNodo;
+    }
+  }
+}
+
+//Dom: lista con los nodos - dato a insertar
+//Rec: void
+//Descripcion: agrega un nodo arbitrariamente en la lista
+void insertarNodoDespues(TDAlista* lista, int dato, int datoAnterior){
+    nodo* aux = *lista;
+
+    while (aux->dato != datoAnterior){
+      aux = aux->puntero;
+    }
+
+    nodo* nuevo = (nodo*)malloc(sizeof(nodo));
+    nuevo->dato= dato;
+    nuevo->puntero = aux->puntero;
+    aux->puntero = nuevo;
+}
+
+/*------------- Actividad 4 -------------*/
+//Dom: lista con los nodos
+//Rec: void
+//Descripcion: elimina un nodo al final de la lista
+void eliminarFinal(TDAlista* lista){
+    nodo* aux = *lista;
+    nodo* antes = NULL;
+
+    while (aux->puntero != NULL){
+      antes = aux;
+      aux = aux->puntero;
+    }
+    antes->puntero = NULL;
+}
+
+//Dom: lista con los nodos - dato a eliminar
+//Rec: void
+//Descripcion: elimina un nodo arbitrariamente en la lista
+void eliminarDato(TDAlista* lista, int dato){
+    nodo* aux = *lista;
+    nodo* before = NULL;
+
+    while (aux->dato != dato){
+        before = aux;
+        aux = aux->puntero;
+    }
+    before->puntero = aux->puntero;
+    free(aux);
+}
+
+/*------------- Actividad 5 -------------*/
+//Dom: lista con los nodos - dato a eliminar
+//Rec: void
+//Descripcion: elimina un nodo arbitrariamente en la lista
+nodo* obtenerNodo(TDAlista lista, int posicion){
+  nodo* aux = lista;
+  int count = 0;
+
+  while (count != posicion - 1){ 
+      aux = aux->puntero;
+      count++;
+  }
+
+  return aux;
+}
+
+void liberarLista(TDAlista* lista, int numNodos){
+  while (!(esListaVacia(*lista))){
+    eliminarInicio(lista);
+  }
+}

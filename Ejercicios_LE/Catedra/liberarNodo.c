@@ -10,7 +10,7 @@ int main(){
 
   int nodos = obtenerNumNodos(lista);
 
-  liberarLista(&lista, nodos);
+  liberarLista(&lista);
 
   recorrerLista(lista);
   return 1;
