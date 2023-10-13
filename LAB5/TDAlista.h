@@ -105,6 +105,23 @@ void insertarNodoDespues(TDAlista* lista, int dato, int datoAnterior){
     nuevo->puntero = aux->puntero;
     aux->puntero = nuevo;
 }
+
+int obtenerNumNodos(TDAlista lista){
+  if(!esListaVacia(lista)){
+    int count = 0;
+    nodo* auxiliar = lista;
+    
+    while (auxiliar != NULL){
+      auxiliar = auxiliar->puntero;
+      count++;
+    }
+    return count;
+
+  }else{
+    return 0;
+  }
+}
+
 /*------------- Actividad 1 -------------*/
 //Dom: lista con los nodos
 //Rec: void
@@ -178,38 +195,42 @@ TDAlista ListaInversa(TDAlista* lista){
   liberarLista(&aux);
 
   return aux_inv;
-}
+  }
 
-/*------------- Actividad 5 -------------*/
-//Dom: lista con los nodos
-//Rec: void
-//Descripcion: cambia los elementos de posicion
-void elementosCambiados(TDAlista* lista, int indice_1, int indice_2){
+  /*------------- Actividad 5 -------------*/
+  //Dom: lista con los nodos
+  //Rec: void
+  //Descripcion: cambia los elementos de posicion
+  void elementosCambiados(TDAlista* lista, int indice_1, int indice_2){
   nodo* aux = *lista;
   nodo* anterior = NULL;
   int posicion = 1;
   int dato_1, dato_1_anterior, dato_2, dato_2_anterior;
-  if(!esListaVacia(*lista)){
-    while (aux != NULL){
-      if(posicion == indice_1){
-        dato_1 = aux->dato;
-        dato_1_anterior = anterior->dato;
-      }
-      if(posicion == indice_2){
-        dato_2 = aux->dato;
-        dato_2_anterior = anterior->dato;
-      }
+  int num_nodos = obtenerNumNodos(*lista);
 
-      anterior = aux;
-      aux = aux->puntero;
-      posicion++;
+  if(dato_2 > num_nodos){
+    printf("%d\n", num_nodos);
+    printf("uno de los indices esta fuero del nodo\n");
+    return;
+  } 
+
+  while (aux != NULL){
+    if(posicion == indice_1){
+      dato_1 = aux->dato;
+      dato_1_anterior = anterior->dato;
+    }
+    if(posicion == indice_2){
+      dato_2 = aux->dato;
+      dato_2_anterior = anterior->dato;
     }
 
-    eliminarDato(lista, dato_1);
-    eliminarDato(lista, dato_2);
-    insertarNodoDespues(lista, dato_2, dato_1_anterior);
-    insertarNodoDespues(lista, dato_1, dato_2_anterior);
-  }else{
-    
+    anterior = aux;
+    aux = aux->puntero;
+    posicion++;
   }
+
+  eliminarDato(lista, dato_1);
+  eliminarDato(lista, dato_2);
+  insertarNodoDespues(lista, dato_2, dato_1_anterior);
+  insertarNodoDespues(lista, dato_1, dato_2_anterior);
 }
