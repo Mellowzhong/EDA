@@ -12,11 +12,11 @@ int main(){
     recorrerLista(lista);
 
     TDAlista lista_2 = sumaVecinos(lista);
-
-    printf("lista2\n");
+    
+    printf("lista2 (vecinos)\n");
     recorrerLista(lista_2);
 
-    if(ListasIguales(&lista, &lista_2)){
+    if(compararListas(&lista, &lista_2)){
 
         printf("Son iguales\n");
     }else{

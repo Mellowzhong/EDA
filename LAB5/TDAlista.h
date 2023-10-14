@@ -62,22 +62,21 @@ void eliminarInicio(TDAlista* lista)
     free(auxiliar);
   }
 }
-void insertarNodoFinal(TDAlista* lista, int dato){
-  if(!esListaVacia(*lista)){
+
+void insertarNodoFinal(TDAlista* lista, int dato) {
+  nodo* nuevo = (nodo*)malloc(sizeof(nodo));
+  nuevo->dato = dato;
+  nuevo->puntero = NULL;
+
+  if (esListaVacia(*lista)) {
+    *lista = nuevo;
+  } else {
+
     nodo* aux = *lista;
-    while(aux->puntero != NULL){
+    while (aux->puntero != NULL) {
       aux = aux->puntero;
     }
-
-    nodo* nuevo = (nodo*)malloc(sizeof(nodo));
-    nuevo->dato= dato;
     aux->puntero = nuevo;
-
-  }else{
-    nodo* nuevo=(nodo*)malloc(sizeof(nodo));
-    nuevo->dato=dato;
-    nuevo->puntero=*lista;
-    *lista=nuevo;
   }
 }
 
@@ -140,22 +139,22 @@ TDAlista sumaVecinos(TDAlista lista1){
   nodo* aux1 = lista1;
   nodo* anterior = NULL;
   TDAlista lista2 = crearListaVacia();
-  int dato = 0;
+  int dato;
 
   while (aux1->puntero != NULL){
+    dato = 0;
     if(anterior == NULL){
       insertarNodoFinal(&lista2, (aux1->puntero)->dato);
       anterior = aux1;
       aux1 = aux1->puntero;
     }else{
-      dato = anterior->dato + aux1->puntero->dato;
+      dato = anterior->dato + (aux1->puntero)->dato;
       insertarNodoFinal(&lista2, dato);
       anterior = aux1;
       aux1 = aux1->puntero;
     }
   }
   insertarNodoFinal(&lista2, anterior->dato);
-
   return lista2;
 }
 
@@ -163,7 +162,7 @@ TDAlista sumaVecinos(TDAlista lista1){
 //Dom: lista_1 con los nodos - lista_2 con los nodos
 //Rec: numero
 //Descripcion: comprueba que la lista_1 sea igual a la lista_2, si es asi devuelve 1, sino sera 0
-int ListasIguales(TDAlista* lista_1, TDAlista* lista_2){
+int compararListas(TDAlista* lista_1, TDAlista* lista_2){
   nodo* aux_1 = *lista_1;
   nodo* aux_2 = *lista_2;
 
@@ -195,24 +194,23 @@ TDAlista ListaInversa(TDAlista* lista){
   liberarLista(&aux);
 
   return aux_inv;
-  }
+}
 
-  /*------------- Actividad 5 -------------*/
-  //Dom: lista con los nodos
-  //Rec: void
-  //Descripcion: cambia los elementos de posicion
-  void elementosCambiados(TDAlista* lista, int indice_1, int indice_2){
+/*------------- Actividad 5 -------------*/
+//Dom: lista con los nodos
+//Rec: void
+//Descripcion: cambia los elementos de posicion
+void elementosCambiados(TDAlista* lista, int indice_1, int indice_2){
   nodo* aux = *lista;
   nodo* anterior = NULL;
   int posicion = 1;
   int dato_1, dato_1_anterior, dato_2, dato_2_anterior;
   int num_nodos = obtenerNumNodos(*lista);
 
-  if(dato_2 > num_nodos){
-    printf("%d\n", num_nodos);
-    printf("uno de los indices esta fuero del nodo\n");
+  if(indice_2 > num_nodos){
+    printf("el indice 2 esta fuera de la lista");
     return;
-  } 
+  }
 
   while (aux != NULL){
     if(posicion == indice_1){
