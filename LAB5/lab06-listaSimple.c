@@ -18,10 +18,10 @@ int main(){
 
     if(compararListas(&lista, &lista_2)){
 
-        printf("Son iguales\n");
+        printf("lista 1 y 2 son iguales\n");
     }else{
 
-        printf("No son iguales\n");
+        printf("lista 1 y 2 no son iguales\n");
     }
 
     TDAlista lista_3 = ListaInversa(&lista_2);
