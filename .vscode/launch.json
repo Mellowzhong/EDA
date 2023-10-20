@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/mellowzhong/Desktop/EDA/LAB5",
-      "program": "/home/mellowzhong/Desktop/EDA/LAB5/build/Debug/outDebug",
+      "cwd": "/home/mellowzhong/Desktop/EDA/TDACola",
+      "program": "/home/mellowzhong/Desktop/EDA/TDACola/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
