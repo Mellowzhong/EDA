@@ -16,10 +16,8 @@ TDAlista crearListaVacia(){
 
 int esListaVacia(TDAlista lista){
   if (lista == NULL){
-
     return 1;
   }else{
-
     return 0;
   }
 }
@@ -53,4 +51,53 @@ int mirar(TDAlista lista) {
     printf("No hay nada en la pila\n");
     return -1;
   }
+}
+
+TDAlista listaInversa(TDAlista* lista){
+  TDAlista inicio=crearListaVacia();
+  while(!esListaVacia(*lista)){
+    apilar(&inicio, (*lista)->dato);
+    desapilar(lista);
+  }
+  return inicio;
+}
+
+void imprimirCola(TDAlista* cola) {
+    nodo* actual = *cola;
+    while (actual != NULL) {
+        printf("%d -> ", actual->dato);
+        actual = actual->puntero;
+    }
+    printf("NULL\n");
+}
+
+int encontrarValor(TDAlista* lista, int v){
+  TDAlista inicio = crearListaVacia();
+  int encontrado = 0;
+  while (!esListaVacia(*lista)){
+    int dato = (*lista)->dato;
+    apilar(&inicio, dato);
+    if(dato == v){
+      encontrado = 1;
+    }
+    desapilar(lista);
+  }
+  while (!esListaVacia(inicio)){
+    apilar(lista, inicio->dato);
+    desapilar(&inicio);
+  }
+
+  return encontrado;
+}
+
+//Ejercicio 4
+TDAlista ordenarPila(TDAlista* lista){
+  TDAlista listaAux = crearListaVacia();
+  TDAlista listaFinal = crearListaVacia();
+  
+}
+
+//Ejercicio 5
+TDAlista eliminarRepetidos(TDAlista* lista){
+
 }

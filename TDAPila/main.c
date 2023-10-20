@@ -3,15 +3,23 @@
 int main() {
     TDAlista lista = crearListaVacia();
 
-    apilar(&lista, 2);
+    apilar(&lista, 9);
     apilar(&lista, 3);
-    apilar(&lista, 4);
+    apilar(&lista, 7);
+    apilar(&lista, 5);
+    apilar(&lista, 6);
+    apilar(&lista, 8);
+
+    TDAlista lista_2 = ordenarPila(&lista);
+
+    int encontrado = encontrarValor(&lista, 10);
+    printf("valor: %d", encontrado);
 
     printf("Primer elemento de la TDAlista: %d\n", mirar(lista));
 
-    printf("Desapilando elementos: %d\n", desapilar(&lista));
+    TDAlista inversa = listaInversa(&lista);
 
-    printf("Primer elemento de la TDAlista: %d\n", mirar(lista));
+    printf("Primer elemento de la TDAlista: %d\n", mirar(inversa));
 
     free(lista);
     return 0;

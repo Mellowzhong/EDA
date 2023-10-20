@@ -54,11 +54,34 @@ int desencolar(TDAlista* lista) {
     }
 }
 
-
 int mirar(TDAlista* lista) {
     if (!esListaVacia(*lista)) {
         return lista->frente->dato;
     }else{
         return -1;   //No hay elementos en la cola
     }
+}
+
+void imprimirCola(TDAlista* cola) {
+    Nodo* actual = cola->frente;
+    while (actual != NULL) {
+        printf("%d -> ", actual->dato);
+        actual = actual->siguiente;
+    }
+    printf("NULL\n");
+}
+
+TDAlista* cambiarOcurrencias(TDAlista* lista, int v1, int v2){
+    TDAlista* inicio = crearListaVacia();
+    int resta = v2 - v1;
+    while (!esListaVacia(*lista)){
+       if(lista->frente->dato == v1){
+        encolar(inicio, resta);
+        desencolar(lista);
+       }else{
+        encolar(inicio, lista->frente->dato);
+        desencolar(lista);
+       }
+    }
+    return inicio;
 }

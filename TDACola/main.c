@@ -5,13 +5,15 @@ int main() {
 
     encolar(lista, 2);
     encolar(lista, 3);
-    encolar(lista, 4);
+    encolar(lista, 2);
 
-    printf("Primer elemento de la lista: %d\n", mirar(lista));
+    TDAlista* lista_2 = cambiarOcurrencias(lista, 2, 10);
 
-    printf("Desencolando elementos: %d\n", desencolar(lista));
+    printf("Primer elemento de la lista: %d\n", mirar(lista_2));
 
-    printf("Primer elemento de la lista despues de desencolar: %d\n", mirar(lista));
+    printf("Desencolando elementos: %d\n", desencolar(lista_2));
+
+    printf("Primer elemento de la lista despues de desencolar: %d\n", mirar(lista_2));
 
     free(lista);
     return 0;
