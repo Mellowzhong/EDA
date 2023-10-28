@@ -1,19 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Definición de la estructura de un nodo en la TDAlista
+// Definición de la estructura de un nodo en la TDACola
 typedef struct Nodo {
     int dato;
     struct Nodo* siguiente;
 } Nodo;
 
-// Definición de la TDAlista
-typedef struct TDAlista {
+// Definición de la TDACola
+typedef struct TDACola {
     Nodo* frente;
     Nodo* final;
-} TDAlista;
+} TDACola;
 
-int esListaVacia(TDAlista lista){
+int esListaVacia(TDACola lista){
   if (lista.frente == NULL){
     return 1;
   }else{
@@ -21,15 +21,15 @@ int esListaVacia(TDAlista lista){
   }
 }
 
-// Función para crear una TDAlista vacía
-TDAlista* crearListaVacia() {
-    TDAlista* nuevaTDAlista = (TDAlista*)malloc(sizeof(TDAlista));
-    nuevaTDAlista->frente = nuevaTDAlista->final = NULL;
-    return nuevaTDAlista;
+// Función para crear una TDACola vacía
+TDACola* crearListaVacia() {
+    TDACola* nuevaTDACola = (TDACola*)malloc(sizeof(TDACola));
+    nuevaTDACola->frente = nuevaTDACola->final = NULL;
+    return nuevaTDACola;
 }
 
-// Función para enTDAlistar un elemento
-void encolar(TDAlista* lista, int dato) {
+// Función para enTDAColar un elemento
+void encolar(TDACola* lista, int dato) {
     Nodo* nuevoNodo = (Nodo*)malloc(sizeof(Nodo));
     nuevoNodo->dato = dato;
     nuevoNodo->siguiente = NULL;
@@ -41,7 +41,7 @@ void encolar(TDAlista* lista, int dato) {
     }
 }
 
-int desencolar(TDAlista* lista) {
+int desencolar(TDACola* lista) {
     if (!esListaVacia(*lista)) {
         Nodo* temp = lista->frente;
         int dato = temp->dato;
@@ -54,7 +54,7 @@ int desencolar(TDAlista* lista) {
     }
 }
 
-int mirar(TDAlista* lista) {
+int mirar(TDACola* lista) {
     if (!esListaVacia(*lista)) {
         return lista->frente->dato;
     }else{
@@ -62,7 +62,7 @@ int mirar(TDAlista* lista) {
     }
 }
 
-void imprimirCola(TDAlista* cola) {
+void imprimirCola(TDACola* cola) {
     Nodo* actual = cola->frente;
     while (actual != NULL) {
         printf("%d -> ", actual->dato);
@@ -71,8 +71,8 @@ void imprimirCola(TDAlista* cola) {
     printf("NULL\n");
 }
 
-TDAlista* cambiarOcurrencias(TDAlista* lista, int v1, int v2){
-    TDAlista* inicio = crearListaVacia();
+TDACola* cambiarOcurrencias(TDACola* lista, int v1, int v2){
+    TDACola* inicio = crearListaVacia();
     int resta = v2 - v1;
     while (!esListaVacia(*lista)){
        if(lista->frente->dato == v1){

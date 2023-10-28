@@ -1,7 +1,7 @@
 #include "TDAPila.h"
 
 int main() {
-    TDAlista lista = crearListaVacia();
+    TDAPila lista = crearListaVacia(2);
 
     apilar(&lista, 9);
     apilar(&lista, 3);
@@ -10,16 +10,16 @@ int main() {
     apilar(&lista, 6);
     apilar(&lista, 8);
 
-    TDAlista lista_2 = ordenarPila(&lista);
+    TDAPila lista_2 = ordenarPila(&lista);
 
     int encontrado = encontrarValor(&lista, 10);
     printf("valor: %d", encontrado);
 
-    printf("Primer elemento de la TDAlista: %d\n", mirar(lista));
+    printf("Primer elemento de la TDAPila: %d\n", mirar(lista));
 
-    TDAlista inversa = listaInversa(&lista);
+    TDAPila inversa = listaInversa(&lista);
 
-    printf("Primer elemento de la TDAlista: %d\n", mirar(inversa));
+    printf("Primer elemento de la TDAPila: %d\n", mirar(inversa));
 
     free(lista);
     return 0;

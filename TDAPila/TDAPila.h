@@ -6,15 +6,15 @@ typedef struct nodoGenerico{
   struct nodoGenerico* puntero;
 }nodo;
 
-typedef nodo* TDAlista;
+typedef nodo* TDAPila;
 
-TDAlista crearListaVacia(){
-  TDAlista lista=(TDAlista)malloc(sizeof(TDAlista));
+TDAPila crearListaVacia(int n){
+  TDAPila lista=(TDAPila)malloc(sizeof(TDAPila));
   lista = NULL;
   return lista;
 }
 
-int esListaVacia(TDAlista lista){
+int esListaVacia(TDAPila lista){
   if (lista == NULL){
     return 1;
   }else{
@@ -22,14 +22,14 @@ int esListaVacia(TDAlista lista){
   }
 }
 
-void apilar(TDAlista* lista, int dato){
+void apilar(TDAPila* lista, int dato){
   nodo* nuevo=(nodo*)malloc(sizeof(nodo));
   nuevo->dato=dato;
   nuevo->puntero=*lista;
   *lista=nuevo;
 }
 
-int desapilar(TDAlista* lista) {
+int desapilar(TDAPila* lista) {
   if (!esListaVacia(*lista)) {
     nodo* aux = *lista;
     int dato = aux->dato;
@@ -40,10 +40,9 @@ int desapilar(TDAlista* lista) {
     printf("La pila esta vacia\n");
     return -1;
   }
-
 }
 
-int mirar(TDAlista lista) {
+int mirar(TDAPila lista) {
   if (!esListaVacia(lista)) {
     nodo* aux = lista;
     return aux->dato;
@@ -53,8 +52,9 @@ int mirar(TDAlista lista) {
   }
 }
 
-TDAlista listaInversa(TDAlista* lista){
-  TDAlista inicio=crearListaVacia();
+TDAPila listaInversa(TDAPila* lista){
+  int n = 2;
+  TDAPila inicio=crearListaVacia(n);
   while(!esListaVacia(*lista)){
     apilar(&inicio, (*lista)->dato);
     desapilar(lista);
@@ -62,7 +62,7 @@ TDAlista listaInversa(TDAlista* lista){
   return inicio;
 }
 
-void imprimirCola(TDAlista* cola) {
+void imprimirCola(TDAPila* cola) {
     nodo* actual = *cola;
     while (actual != NULL) {
         printf("%d -> ", actual->dato);
@@ -71,8 +71,9 @@ void imprimirCola(TDAlista* cola) {
     printf("NULL\n");
 }
 
-int encontrarValor(TDAlista* lista, int v){
-  TDAlista inicio = crearListaVacia();
+int encontrarValor(TDAPila* lista, int v){
+  int n = 2;
+  TDAPila inicio = crearListaVacia(n);
   int encontrado = 0;
   while (!esListaVacia(*lista)){
     int dato = (*lista)->dato;
@@ -91,13 +92,16 @@ int encontrarValor(TDAlista* lista, int v){
 }
 
 //Ejercicio 4
-TDAlista ordenarPila(TDAlista* lista){
-  TDAlista listaAux = crearListaVacia();
-  TDAlista listaFinal = crearListaVacia();
+TDAPila ordenarPila(TDAPila* lista){
+  int n = 2;
+  TDAPila listaAux = crearListaVacia(n);
+  TDAPila listaFinal = crearListaVacia(n);
   
 }
 
 //Ejercicio 5
-TDAlista eliminarRepetidos(TDAlista* lista){
+TDAPila eliminarRepetidos(TDAPila* lista){
+  int n = 2;
+  TDAPila listaAux = crearListaVacia(n);
 
 }
