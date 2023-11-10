@@ -8,61 +8,72 @@ typedef struct Nodo {
 } Nodo;
 
 // Definición de la TDACola
-typedef struct TDACola {
-    Nodo* frente;
-    Nodo* final;
-} TDACola;
+typedef struct TDAcola{
+  int capacidad;
+  int size;
+  Nodo* frente;
+  Nodo* final;
+} TDAcola;
 
-int esListaVacia(TDACola lista){
-  if (lista.frente == NULL){
+int esColaVacia(TDAcola* lista){
+  if((*lista).frente == NULL){
     return 1;
-  }else{
+  }
+  else{
     return 0;
   }
 }
 
 // Función para crear una TDACola vacía
-TDACola* crearListaVacia() {
-    TDACola* nuevaTDACola = (TDACola*)malloc(sizeof(TDACola));
+TDAcola* crearColaVacia(int capacidad){
+    TDAcola* nuevaTDACola = (TDAcola*)malloc(sizeof(TDAcola));
+    nuevaTDACola->capacidad = capacidad;
+    nuevaTDACola->size = 0;
     nuevaTDACola->frente = nuevaTDACola->final = NULL;
     return nuevaTDACola;
 }
 
 // Función para enTDAColar un elemento
-void encolar(TDACola* lista, int dato) {
-    Nodo* nuevoNodo = (Nodo*)malloc(sizeof(Nodo));
-    nuevoNodo->dato = dato;
-    nuevoNodo->siguiente = NULL;
-    if (esListaVacia(*lista)) {
-        lista->frente = lista->final = nuevoNodo;
+void encolar(TDAcola* lista, int dato) {
+    if (lista->size < lista->capacidad) {
+        Nodo* nuevoNodo = (Nodo*)malloc(sizeof(Nodo));
+        nuevoNodo->dato = dato;
+        nuevoNodo->siguiente = NULL;
+        if (esColaVacia(lista)){
+            lista->frente = nuevoNodo;
+            lista->final = nuevoNodo;
+        } else {
+            lista->final->siguiente = nuevoNodo;
+            lista->final = nuevoNodo;
+        }
+        lista->size++; // Incrementa el tamaño de la cola
     } else {
-        lista->final->siguiente = nuevoNodo;
-        lista->final = nuevoNodo;
+        printf("La cola está llena.\n");
     }
 }
 
-int desencolar(TDACola* lista) {
-    if (!esListaVacia(*lista)) {
-        Nodo* temp = lista->frente;
-        int dato = temp->dato;
+int desencolar(TDAcola* lista) {
+    if (!esColaVacia(lista)) {
+        Nodo* nodoFrente = lista->frente;
         lista->frente = lista->frente->siguiente;
-        free(temp);
-        return dato;
-    }else{
-        printf("La lista esta vacia\n");
-        return -1;
+        free(nodoFrente);
+        lista->size--; // Decrementa el tamaño de la cola
+        return 1; // Indicador de éxito
+    } else {
+        printf("La cola está vacía.\n");
+        return 0; // Indicador de error
     }
 }
 
-int mirar(TDACola* lista) {
-    if (!esListaVacia(*lista)) {
+int mirar(TDAcola* lista) {
+    if (!esColaVacia(lista)) {
         return lista->frente->dato;
     }else{
         return -1;   //No hay elementos en la cola
     }
 }
 
-void imprimirCola(TDACola* cola) {
+void imprimirCola(TDAcola* cola) {
     Nodo* actual = cola->frente;
     while (actual != NULL) {
         printf("%d -> ", actual->dato);
@@ -71,10 +82,11 @@ void imprimirCola(TDACola* cola) {
     printf("NULL\n");
 }
 
-TDACola* cambiarOcurrencias(TDACola* lista, int v1, int v2){
-    TDACola* inicio = crearListaVacia();
+TDAcola* cambiarOcurrencias(TDAcola* lista, int v1, int v2){
+    int capacidadLista = lista->capacidad;
+    TDAcola* inicio = crearColaVacia(capacidadLista);
     int resta = v2 - v1;
-    while (!esListaVacia(*lista)){
+    while (!esColaVacia(lista)){
        if(lista->frente->dato == v1){
         encolar(inicio, resta);
         desencolar(lista);
