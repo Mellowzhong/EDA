@@ -97,3 +97,21 @@ TDAcola* cambiarOcurrencias(TDAcola* lista, int v1, int v2){
     }
     return inicio;
 }
+
+TDAcola* invertirCola(TDAcola* lista) {
+    TDAcola* colaInvertida = crearColaVacia(lista->capacidad);
+
+    while (lista->frente != NULL){
+        int dato = mirar(lista);
+        desencolar(lista);
+        Nodo* nuevoNodo = (Nodo*)malloc(sizeof(Nodo));
+        nuevoNodo->dato = dato;
+        nuevoNodo->siguiente = colaInvertida->frente;
+        colaInvertida->frente = nuevoNodo;
+        colaInvertida->size++;
+    }
+
+    colaInvertida->final = colaInvertida->frente;
+
+    return colaInvertida;
+}
