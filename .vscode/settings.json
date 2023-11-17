@@ -63,5 +63,6 @@
     "xutility": "cpp",
     "xstring": "c",
     "t1_franciscosanchez_matriz.h": "c"
-  }
+  },
+  "C_Cpp.errorSquiggles": "disabled"
 }

@@ -17,7 +17,35 @@ struct grafo
 
 typedef struct grafo TDAGrafoLA;
 
+typedef struct NodoColaPrioridad {
+    int vertice;
+    int prioridad;
+} NodoColaPrioridad;
+
+typedef struct ColaPrioridad {
+    NodoColaPrioridad* elementos;
+    int capacidad;
+    int tamaño;
+} ColaPrioridad;
+
 /*------------- operaciones -------------*/
+
+void insertarNodoFinal(TDAlista* lista, int dato) {
+  nodo* nuevo = (nodo*)malloc(sizeof(nodo));
+  nuevo->dato = dato;
+  nuevo->puntero = NULL;
+
+  if (esListaVacia(*lista)) {
+    *lista = nuevo;
+  } else {
+
+    nodo* aux = *lista;
+    while (aux->puntero != NULL) {
+      aux = aux->puntero;
+    }
+    aux->puntero = nuevo;
+  }
+}
 
 TDAGrafoLA* crearGrafoVacio(int n)
 {
@@ -226,6 +254,3 @@ void recorridoBFS(TDAGrafoLA* grafo, int vertice)
 }
 
 /*-------- Actividad 5: aplicación BFS -------------*/ 
-
-
-//Dijikstra
