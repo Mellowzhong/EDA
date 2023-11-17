@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/panch/Desktop/EDA/LAB7",
-      "program": "c:/Users/panch/Desktop/EDA/LAB7/build/Debug/outDebug",
+      "cwd": "c:/Users/panch/Desktop/EDA/Tarea_1",
+      "program": "c:/Users/panch/Desktop/EDA/Tarea_1/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

@@ -23,7 +23,7 @@ TDAGrafoLA* crearGrafoVacio(int n)
 {
 	int i;
 
-	TDAGrafoLA* G=malloc(sizeof(TDAGrafoLA));
+	TDAGrafoLA* G= (TDAGrafoLA*)malloc(sizeof(TDAGrafoLA));
     G->A = (TDAlista*)malloc(sizeof(TDAlista)*n);
     G->V = (int*)malloc(sizeof(int)*n);
 
@@ -120,79 +120,80 @@ void marcarVisitado(TDAlista* visitados, int vertice)
 {
   nodo* nuevo = (nodo*)malloc(sizeof(nodo));
   nuevo->dato = vertice;
-  nuevo->puntero = NULL;
-
-  if (esListaVacia(*visitados)) {
-    *visitados = nuevo;
-  } else {
-
-    nodo* aux = *visitados;
-    while (aux->puntero != NULL) {
-      aux = aux->puntero;
-    }
-    aux->puntero = nuevo;
-  }
-  printf("se visito: %d\n", vertice);
+  nuevo->puntero = *visitados;
+  *visitados = nuevo;
 }
 
-int adyacenteNoVisitado(TDAlista adyacentes, TDAlista* visitados)
-{
-	nodo* aux_adyacentes = *visitados;
-	while (aux_adyacentes != NULL)
-	{
-		nodo* aux_visitados = *visitados;
-		while (aux_visitados->puntero != NULL)
-		{
-			if (aux_adyacentes->dato != aux_visitados->dato)
-			{
-				return aux_adyacentes->dato;
-			}
-			aux_visitados = aux_visitados->puntero;
-		}
-		aux_adyacentes = aux_adyacentes->puntero;
-	}
-	
-	return -1;
+int adyacenteNoVisitado(TDAlista* adyacentes, TDAlista* visitados) {
+    nodo* aux_adyacentes = *adyacentes;
+
+    while (aux_adyacentes != NULL) {
+        nodo* aux_visitados = *visitados;
+        int encontrado = 0;
+
+        while (aux_visitados != NULL) {
+            if (aux_adyacentes->dato == aux_visitados->dato) {
+                encontrado = 1;
+                break;
+            }
+            aux_visitados = aux_visitados->puntero;
+        }
+
+        if (!encontrado) {
+            return aux_adyacentes->dato;
+        }
+
+        aux_adyacentes = aux_adyacentes->puntero;
+    }
+
+    return -1;
 }
 
 void recorridoDFS(TDAGrafoLA* grafo, int inicio)
 {
-	int topePila,w,i;
-	TDAlista adyacentes;
+    int topePila, w;
+    TDAlista adyacentes;
 
-	//definir tipo de dato de "visitados"
-	TDAlista visitados = crearListaVacia();
+    // Definir tipo de dato de "visitados"
+    TDAlista visitados = NULL;
 
-	TDApila* pila=crearPilaVacia(grafo->n);
-	apilar(pila,inicio);
-	marcarVisitado(&visitados,inicio);
-	
-	while (!(esPilaVacia(pila)))
-	{
-		topePila=tope(pila)->dato;
-		adyacentes=obtenerAdyacentes(grafo,topePila);
-		w=adyacenteNoVisitado(adyacentes,&visitados);
-		if (w!=-1)
-		{
-			apilar(pila,w);
-			marcarVisitado(&visitados,w);
-		}
-		else
-		{
-			desapilar(pila);
-		}
-	}
-	printf("\n");
+    TDApila* pila = crearPilaVacia(grafo->n);
+    apilar(pila, inicio);
+    marcarVisitado(&visitados, inicio);
+
+    while (!esPilaVacia(pila)) {
+        topePila = tope(pila)->dato;
+        adyacentes = obtenerAdyacentes(grafo, topePila);
+        w = adyacenteNoVisitado(&adyacentes, &visitados);
+
+        if (w != -1) {
+            printf(" -> %d", w);
+            apilar(pila, w);
+            marcarVisitado(&visitados, w);
+        } else {
+            printf(" <- %d", topePila);
+            desapilar(pila);
+        }
+    }
+    printf("\n");
 }
 
 /*-------- Actividad 3: aplicación DFS -------------*/ 
 
 
-/*-------- Actividad 4: BFS -------------
+//-------- Actividad 4: BFS -------------
 
-int estaVisitado(int vertice)
+int estaVisitado(TDAlista* visitados, int vertice)
 {
-	return 1;
+    nodo* aux_visitados = *visitados;
+    while (aux_visitados != NULL) {
+        if (vertice == aux_visitados->dato) {
+            return 1;  // Vértice ya visitado
+        }
+        aux_visitados = aux_visitados->puntero;
+    }
+
+    return 0;  // Vértice no visitado
 }
 
 void recorridoBFS(TDAGrafoLA* grafo, int vertice)
@@ -201,20 +202,23 @@ void recorridoBFS(TDAGrafoLA* grafo, int vertice)
     TDAlista adyacentes;
     
     //definir tipo de dato de "visitados"
+	TDAlista visitados = crearListaVacia();
 
 	TDAcola* cola = crearColaVacia(grafo->n);
 	encolar(cola, vertice);
-	while(!esColaVacia(*cola))
+	while(!esColaVacia(cola))
 	{
-		frenteCola=frente(*cola)->dato;
-		descolar(cola);
-		//marcarVisitado(frenteCola);	
+		frenteCola=mirar(cola);
+		desencolar(cola);
+		printf("visitando: %d\n", frenteCola);
+		marcarVisitado(&visitados, frenteCola);	
 		adyacentes=obtenerAdyacentes(grafo,frenteCola);
 		while(adyacentes!=NULL)
 		{
 			w=adyacentes->dato;
-			if (!(estaVisitado(w)))
+			if (!(estaVisitado(&visitados, w))){
 				encolar(cola,w);
+			}
 			adyacentes=adyacentes->puntero;
 		}
 	}
@@ -222,3 +226,6 @@ void recorridoBFS(TDAGrafoLA* grafo, int vertice)
 }
 
 /*-------- Actividad 5: aplicación BFS -------------*/ 
+
+
+//Dijikstra

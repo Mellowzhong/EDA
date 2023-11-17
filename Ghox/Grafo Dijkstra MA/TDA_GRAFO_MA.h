@@ -72,10 +72,10 @@ int *adyacentes_vertice(Grafo *g, int v){
 
 Grafo *crear_grafo(int n){
 	Grafo *g;
-	g = malloc(sizeof(Grafo));
-  g->Mad = malloc(sizeof(float*)*n);
+	g = (Grafo*)malloc(sizeof(Grafo));
+  g->Mad = (float**)malloc(sizeof(float*)*n);
 	for (int i=0; i<n; i++){
-      g->Mad[i] = malloc(sizeof(float)*n);
+      g->Mad[i] = (float*)malloc(sizeof(float)*n);
 	}
 	//Todas las aristas M[i][j] de la matriz quedan inactivas (sin conexi�n)
 	for (int i=0; i<n;i++) {

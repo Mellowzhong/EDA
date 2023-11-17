@@ -92,3 +92,12 @@ void readFileWords(wordList* wordLista, char* fileName, int* size_array_words){
 
     printf("Se pudo leer correctamente el archivo de las palabras\n");
 }
+
+void recorrerLista(wordList* lista){
+    wordNode* auxiliar = lista->head;
+    while (auxiliar!=NULL){
+      printf("%s ",auxiliar->word);
+      auxiliar = auxiliar->next;
+    }
+    printf("\n");
+}

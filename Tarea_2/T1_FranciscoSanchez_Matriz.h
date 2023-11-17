@@ -110,51 +110,24 @@ void readFileMatrix(MatrixList *matrix, char* fileName, int *rows, int *columns)
 //Salida: caracter encontrado
 //Descripcion: va recorriendo la matriz, cuando las columnas y filas coincidan con las actuales devuelve el caracter
 char getCharByCoord(MatrixList *matrix, int rows, int columns, int passRow, int passColumn){
-
     MatrixNode* current = matrix->head;
     int current_row = 0;
     int current_column = 0;
-
+    
     while (current != NULL){
         if (current_row == passRow && current_column == passColumn){
-            return current->character;
-        }
-
-        // Avanza al siguiente carácter
-        current = current->next;
-        current_column++;
-
-        // Si hemos llegado al final de una fila, imprime un salto de línea
-        if (current_column > columns){
-            current_row++;
-            current_column = 1;
-        }
-    }
-}
-
-//Entrada: matriz - filas de la matriz - columnas de la matriz 
-            //- fila en donde se desdea encontrar el caracter - columna en donde se desdea encontrar el caracter
-//Salida: caracter encontrado
-//Descripcion: va recorriendo la matriz, cuando las columnas y filas coincidan con las actuales reemplaza el caracter por un '*'
-void replaceCharByCoord(MatrixList *matrix, int rows, int columns, int passRow, int passColumn){
-
-    MatrixNode* current = matrix->head;
-    int current_row = 0;
-    int current_column = 0;
-
-    while (current != NULL){
-        if (current_row == passRow && current_column == passColumn){
+            char aux = current->character;
             current->character = '*';
+            return aux;
         }
 
         // Avanza al siguiente carácter
         current = current->next;
         current_column++;
 
-        // Si hemos llegado al final de una fila, imprime un salto de línea
         if (current_column > columns){
             current_row++;
-            current_column = 1;
+            current_column = 0;
         }
     }
 }
