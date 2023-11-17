@@ -71,7 +71,7 @@ int* dijkstra(Grafo* grafo, int inicio) {
 
     int* anterior = (int*)malloc(n * sizeof(int));
     int* distancia = (int*)malloc(n * sizeof(int));
-    int* visitados = (int*)calloc(n, sizeof(int));
+    int* visitados = (int*)malloc(n, sizeof(int));
 
     for (int i = 0; i < n; i++) {
         anterior[i] = 0;

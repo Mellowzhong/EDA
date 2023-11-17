@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/mellowzhong/Desktop/EDA/Dijikstra",
-      "program": "/home/mellowzhong/Desktop/EDA/Dijikstra/build/Debug/outDebug",
+      "cwd": "/home/mellowzhong/Desktop/EDA/Ghox/Grafo Dijkstra MA",
+      "program": "/home/mellowzhong/Desktop/EDA/Ghox/Grafo Dijkstra MA/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

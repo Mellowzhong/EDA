@@ -55,15 +55,5 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false,
-  "files.associations": {
-    "CODE.C": "cpp",
-    "tda_pixel.h": "c",
-    "string.h": "c",
-    "xutility": "cpp",
-    "xstring": "c",
-    "t1_franciscosanchez_matriz.h": "c",
-    "tdalistatripleta.h": "c"
-  },
-  "C_Cpp.errorSquiggles": "disabled"
+  "C_Cpp_Runner.msvcSecureNoWarnings": false
 }
