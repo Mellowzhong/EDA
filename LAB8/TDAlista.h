@@ -52,6 +52,24 @@ void insertarInicio(TDAlista* lista, int dato)
   *lista=nuevo;
 }
 
+void insertarNodoFinal(TDAlista* lista, int dato) {
+  nodo* nuevo = (nodo*)malloc(sizeof(nodo));
+  nuevo->dato = dato;
+  nuevo->puntero = NULL;
+
+  if (esListaVacia(*lista)) {
+    *lista = nuevo;
+  } else {
+
+    nodo* aux = *lista;
+    while (aux->puntero != NULL) {
+      aux = aux->puntero;
+    }
+    aux->puntero = nuevo;
+  }
+}
+
+
 void eliminarInicio(TDAlista* lista)
 {
   nodo* auxiliar;

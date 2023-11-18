@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "TDAlista.h" 
 #include "TDAcola.h"
+#include "TDAcolaTripleta.h"
 #include "TDApila.h"
 #include "TDAlistaTripleta.h"
 
@@ -55,12 +56,7 @@ void imprimirListaAdyacencia(TDAGrafoLA* G)
 		recorrerListaTripleta(G->A[i]);
 	}
 }
-/*
-void agregar_arista(TDAGrafoLA* G, int v, int w)
-{
-	insertarInicio(&(G->A[v-1]),w);	
-}
-*/
+
 void agregar_arista_peso(TDAGrafoLA *G, int v, int w, int peso)
 {
 
@@ -225,22 +221,11 @@ void recorridoBFS(TDAGrafoLA* grafo, int vertice)
 
 /*-------- semana 10 -----------*/
 
-int calcularLargoArreglo(int* arreglo) {
-    // Supongamos que el arreglo tiene un valor especial al final, como -1
-    int largo = 0;
-    while (arreglo[largo] != -1) {
-        largo++;
-    }
-    return largo;
-}
-
-int existeEnArreglo(int* arreglo, int elemento) {
-    int i = 0;
-    while (arreglo[i] != -1) {
-        if (arreglo[i] == elemento) {
+int existenVerticesSinVisitar(int* arreglo, int largo) {
+    for (int i = 0; i < largo; i++){
+        if (arreglo[i] == 0){
             return 1;
         }
-        i++;
     }
     return 0;
 }
@@ -250,7 +235,7 @@ int noVisitadoDistanciaMinima(int* distancia, int* visitados, int n) {
     int vertice = -1;
 
     for (int i = 0; i < n; i++) {
-        if (!visitados[i] && distancia[i] < minDistancia) {
+        if (!visitados[i] && distancia[i] < minDistancia){
             minDistancia = distancia[i];
             vertice = i;
         }
@@ -259,53 +244,143 @@ int noVisitadoDistanciaMinima(int* distancia, int* visitados, int n) {
     return vertice;
 }
 
-void marcarVisitado(int* visitados, int vertice) {
-    visitados[vertice] = 1;
-}
-
-TDAlista obtenerAdyacentes(TDAGrafoLA* grafo, int vertice)
-{
-	TDAlista adyacentes=crearListaVacia();
-	nodo* aux= grafo->A[vertice-1];
-	while (aux!=NULL) 
-	{
-		insertarInicio(&adyacentes, aux->dato);
-		aux=aux->puntero;		
-	}
-	return(adyacentes);
-}
-
-void dijkstra(Grafo* grafo, int inicio, TDAlista visitados, int* distancias) {
+void dijkstra(TDAGrafoLA* grafo, int inicio, int* anterior, int* distancia) {
     int n = grafo->n;
 
+    int* visitados = (int*)malloc(grafo->n*(sizeof(int)));
+
     for (int i = 0; i < n; i++) {
-        anterior[i] = 0;
-        if (grafo->A[inicio][i] > 0) {
-            distancia[i] = grafo->W[inicio][i];
-            anterior[i] = inicio;
-        } else {
-            distancia[i] = INT_MAX;
-        }
+        visitados[i] = 0;
+        anterior[i] = -1;
+        distancia[i] = 9999;
     }
-
+    int i = 0;
+    TDAlista adyacentes = obtenerAdyacentes(grafo, inicio);
     distancia[inicio] = 0;
-    marcarVisitado(visitados, inicio);
 
-    while (calcularLargoArreglo(visitados) < n) {
-        int u = noVisitadoDistanciaMinima(distancia, visitados, n);
-        marcarVisitado(visitados, u);
-        TDAlista adyacentes = obtenerAdyacentes(grafo, u);
+    while (adyacentes != NULL){
+        anterior[i] = 0;
+        if (adyacentes->dato > 0){
+            distancia[i] = (grafo->A[i])->peso;
+            anterior[i] = inicio;
+        }else{
+            distancia[i] = 9999;
+        }
+        adyacentes = adyacentes->puntero;
+    }
+    distancia[inicio] = 0;
+    visitados[inicio] = 1;
+
+    while(existenVerticesSinVisitar(visitados, grafo->n)){
+        int u = noVisitadoDistanciaMinima(distancia, visitados, grafo->n);
+        visitados[u] = 1;
+        adyacentes = obtenerAdyacentes(grafo, u+1);
         while (adyacentes != NULL){
             int v = adyacentes->dato;
-            if (distancia[v] > distancia[u]+grafo->W[u][v]){
-                distancia[v] = distancia[u]+grafo->W[u][v];
+            if(distancia[v] > distancia[u] + (grafo->A[u])->peso){
+                distancia[v] = distancia[u] + (grafo->A[u])->peso;
                 anterior[v] = u;
             }
             adyacentes = adyacentes->puntero;
         }
-        
     }
 }
 
-TDAlista* mstPrim(TDAGrafoLA* grafo, int inicio); //TDAlistaTripleta* 
-TDAlista* msrtKruskal(TDAGrafoLA* grafo); //TDAlistaTripleta*
+
+//Prim
+int buscarDato(TDAlista MST, int elegido){
+    while (MST != NULL){
+        if (MST->dato == elegido){
+            return 1;
+        }
+    }
+    return 0;
+}
+
+
+TDAlista mstPrim(TDAGrafoLA* grafo, int inicio) {
+    TDAlista MST = crearListaVacia();
+    int n = grafo->n;
+    TDAcolaTripleta* candidatos = crearColaVaciaTripleta(grafo->n);
+    int cuenta = 1;
+    int u = inicio;
+    int* visitados = (int*)malloc(grafo->n*(sizeof(int)));
+    visitados[u] = 1;
+    insertarNodoFinal(&MST, u);
+
+    while (cuenta < n){
+        TDAlista adyacentes = obtenerAdyacentes(grafo, u);
+        
+        while (adyacentes != NULL){
+            int v = adyacentes->dato;
+            encolarTripleta(candidatos, u, (grafo->A[v])->peso);
+            adyacentes = adyacentes->puntero;
+        }
+                            
+        nodocolatripleta* elegido = mirarTripleta(candidatos);
+        while (buscarDato(MST, elegido->fin)){
+            desencolarTripleta(candidatos);
+            elegido = mirarTripleta(candidatos);
+        }
+        if (elegido != NULL){
+            visitados[elegido->fin] = 1;
+            insertarNodoFinal(&MST, elegido->fin);
+            desencolarTripleta(candidatos);
+            cuenta++;
+            u = elegido->fin;
+        }
+    }
+    return MST;
+}
+//kruskall
+Arista* ordenarAristas(Grafo* grafo) {
+    //por hacer
+}
+
+int existeCiclo(LSE MST, Arista arista) {
+    int inicio = arista.inicio;
+    int fin = arista.fin;
+
+    int* conjuntoVertices = (int*)malloc((inicio + fin) * sizeof(int));
+    for (int i = 0; i < inicio + fin; i++) {
+        conjuntoVertices[i] = -1;
+    }
+
+    Nodo* temp = MST;
+    while (temp != NULL) {
+        conjuntoVertices[temp->dato] = temp->dato;
+        temp = temp->siguiente;
+    }
+
+    if (conjuntoVertices[inicio] == conjuntoVertices[fin]) {
+        free(conjuntoVertices);
+        return 1;
+    }
+
+    free(conjuntoVertices);
+    return 0;
+}
+
+TDAlista kruskal(TDAGrafoLA* grafo) {
+    TDAlista MST = crearListaVacia();
+    nodoGenerico* colaAristas = ordenarAristas(grafo);
+    int inicio = 1;
+
+    while (!esColaVacia(colaAristas)) {
+        Arista arista = frente(colaAristas);
+        desencolar(colaAristas);
+
+        if (inicio == 1) {
+            insertarNodoFinal(&MST, arista.fin);
+            inicio = 0;
+        } else {
+            if (!existeCiclo(MST, arista)) {
+                insertarNodoFinal(&MST, arista.fin);
+            }
+        }
+    }
+
+    free(colaAristas);
+
+    return MST;
+}
